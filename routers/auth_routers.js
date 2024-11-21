@@ -1,7 +1,9 @@
-const mealsRouter = require("express").Router();
+const authRouter = require("express").Router();
 
 const { getAllMeals } = require('../controllers/meals_Controllers');
+const { addNewUser} = require('../controllers/users_Controllers')
 
-mealsRouter.get('/meals', getAllMeals);
+authRouter.get('/meals', getAllMeals);
+authRouter.post('/users', addNewUser);
 
-module.exports = { mealsRouter }
+module.exports = { authRouter }

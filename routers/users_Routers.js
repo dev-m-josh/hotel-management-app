@@ -1,6 +1,6 @@
 const usersRouter = require("express").Router();
-const { addNewUser } = require('../controllers/users_Controllers')
+const { userLogin } = require('../controllers/users_Controllers')
 
-usersRouter.post('/users', addNewUser);
+usersRouter.post('/users/login', userLogin)
 
 module.exports = { usersRouter }

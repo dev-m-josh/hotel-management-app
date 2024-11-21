@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require('cors');
 const sql  =require("mssql");
-const { mealsRouter } = require('./routers/auth_routers')
+const { authRouter } = require('./routers/auth_routers');
+const { mealsRouter } = require('./routers/meals_Routers');
 const { usersRouter } = require("./routers/users_Routers");
+const { verifyToken, errorHandler, routesErrorHandler } = require('./middleWares/middleware');
 require("dotenv").config();
 const {config} = require("./config/db_config");
 
@@ -11,10 +13,6 @@ async function startServer() {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({extended:true}));
-
-    app.get('/home', (req,res) =>{
-        res.json('welcome home')
-    })
 
     try {
         //CONNECT TO DATABASE
@@ -28,8 +26,12 @@ async function startServer() {
             next()
         })
 
+        app.use(authRouter);
+        app.use(verifyToken);
         app.use(mealsRouter);
-        app.use(usersRouter)
+        app.use(usersRouter);
+        app.use(errorHandler);
+        app.use('*', routesErrorHandler );
 
         const port = 3000;
         app.listen(port, ()=>{
