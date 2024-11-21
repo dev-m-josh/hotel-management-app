@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require('cors');
 const sql  =require("mssql");
+const { mealsRouter } = require('./routers/auth_routers')
+const { usersRouter } = require("./routers/users_Routers");
 require("dotenv").config();
 const {config} = require("./config/db_config");
 
@@ -9,6 +11,10 @@ async function startServer() {
     app.use(cors());
     app.use(express.json());
     app.use(express.urlencoded({extended:true}));
+
+    app.get('/home', (req,res) =>{
+        res.json('welcome home')
+    })
 
     try {
         //CONNECT TO DATABASE
@@ -22,7 +28,10 @@ async function startServer() {
             next()
         })
 
-        const port = 3500;
+        app.use(mealsRouter);
+        app.use(usersRouter)
+
+        const port = 3000;
         app.listen(port, ()=>{
         console.log(`Sever listening to port: ${port}`)
         });
