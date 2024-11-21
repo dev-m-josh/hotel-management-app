@@ -2,6 +2,7 @@ const { newMealSchema } = require("../validators/validators");
 //GET ALL MEALS
 function getAllMeals(req, res) {
   let pool = req.pool;
+  console.log(req)
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
@@ -30,10 +31,6 @@ function addNewMeal(req, res) {
     return res.status(400).json({ errors: error.details });
   }
 
-  // Check if the logged-in user is an admin
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Only admins can add meals." });
-  }
 
   // Insert the new meal into the database
   pool.query(
@@ -42,11 +39,8 @@ function addNewMeal(req, res) {
       if (err) {
         console.error("Error inserting new meal:", err);
       }else{
-      // Return the new meal's ID or success message
-      const newMealId = result.rows[0].meal_id;
-      res.status(201).json({
+        res.status(201).json({
         message: "Meal added successfully",
-        meal_id: newMealId,
       });
       }
     }
