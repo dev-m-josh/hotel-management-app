@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { newUserSchema, userLoginSchema } = require("../validators/validators");
+const { rows } = require("mssql");
 
 //get all users
 async function addNewUser(req, res) {
@@ -16,7 +17,7 @@ async function addNewUser(req, res) {
     return;
   }
 
-  let password_hash= await bcrypt.hash (value.user_password, 5);
+  let password_hash = await bcrypt.hash(value.user_password, 5);
 
   let token = await jwt.sign({ addedUser }, "youcanguessthisright");
 
@@ -92,4 +93,41 @@ async function userLogin(req, res) {
   }
 }
 
-module.exports = { addNewUser, userLogin };
+//EDIT USER
+function editUser(req, res) {
+  let pool = req.pool;
+  let userToEditId = req.params.userId;
+  let userEdits = req.body;
+  console.log(userToEditId);
+
+  pool.query(
+    `
+      UPDATE users
+      SET username = '${userEdits.username}', user_email = '${userEdits.user_email}', user_password = '${userEdits.user_password}', user_role = '${userEdits.user_role}' WHERE user_id = '${userToEditId}'`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      // Check if any rows were affected
+      if (result.rowsAffected[0] === 0) {
+        return res.status(404).json({
+          success: false,
+          message: `User with ID ${userToEditId} not found.`,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "Edit was successfully done.",
+          rowsAffected: result.rowsAffected,
+          userDetails: userEdits,
+        });
+      }
+    }
+  );
+}
+
+module.exports = { addNewUser, userLogin, editUser };
