@@ -94,16 +94,17 @@ async function userLogin(req, res) {
 }
 
 //EDIT USER
-function editUser(req, res) {
+async function editUser(req, res) {
   let pool = req.pool;
   let userToEditId = req.params.userId;
   let userEdits = req.body;
-  console.log(userToEditId);
+  
+  let password_hash = await bcrypt.hash(userEdits.user_password, 5);
 
   pool.query(
     `
       UPDATE users
-      SET username = '${userEdits.username}', user_email = '${userEdits.user_email}', user_password = '${userEdits.user_password}', user_role = '${userEdits.user_role}' WHERE user_id = '${userToEditId}'`,
+      SET username = '${userEdits.username}', user_email = '${userEdits.user_email}', user_password = '${password_hash}', user_role = '${userEdits.user_role}' WHERE user_id = '${userToEditId}'`,
     (err, result) => {
       if (err) {
         res.status(500).json({
