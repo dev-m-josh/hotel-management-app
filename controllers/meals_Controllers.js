@@ -34,7 +34,7 @@ function addNewMeal(req, res) {
   // Insert the new meal into the database
   pool.query(
     `INSERT INTO menu_items (name, category, description, price) 
-        VALUES ('${value.name}', '${value.category}', '${value.description}', '${value.price}')`,
+    VALUES ('${value.name}', '${value.category}', '${value.description}', '${value.price}')`,
     (err, result) => {
       if (err) {
         console.error("Error inserting new meal:", err);
