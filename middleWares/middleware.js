@@ -25,7 +25,7 @@ try {
 
 //handle error of undefine route
 function routesErrorHandler(req, res) {
-    res.json({
+    res.status(404).json({
         success: false,
         message: "Route not defined!"
     })
