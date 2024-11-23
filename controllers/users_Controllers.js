@@ -1,9 +1,35 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { newUserSchema, userLoginSchema } = require("../validators/validators");
-const { rows } = require("mssql");
 
 //get all users
+function getAllStaffs(req, res) {
+  let pool = req.pool;
+
+  let { page, pageSize } = req.query;
+  let offset = (Number(page) - 1) * Number(pageSize);
+  pool.query(
+    `SELECT * FROM users ORDER BY user_id OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          message: "No users yet",
+        });
+      } else {
+        res.json(result.recordset);
+      }
+    }
+  );
+}
+
+//add new user
 async function addNewUser(req, res) {
   let pool = req.pool;
   let addedUser = req.body;
@@ -166,4 +192,4 @@ function deleteUser(req, res) {
   );
 }
 
-module.exports = { addNewUser, userLogin, editUser, deleteUser };
+module.exports = { getAllStaffs, addNewUser, userLogin, editUser, deleteUser };
