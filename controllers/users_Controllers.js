@@ -98,7 +98,7 @@ async function editUser(req, res) {
   let pool = req.pool;
   let userToEditId = req.params.userId;
   let userEdits = req.body;
-  
+
   let password_hash = await bcrypt.hash(userEdits.user_password, 5);
 
   pool.query(
@@ -131,4 +131,39 @@ async function editUser(req, res) {
   );
 }
 
-module.exports = { addNewUser, userLogin, editUser };
+//DELETE A USER
+function deleteUser(req, res) {
+  let pool = req.pool;
+  let requestedId = req.params.userId;
+  pool.query(
+    `DELETE FROM users WHERE user_id = ${requestedId}`,
+    (err, result) => {
+      //ERROR CHECK
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+
+      //CHECK IF REQUESTED USER IS AVAILABLE
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          success: false,
+          message: "User not found!",
+        });
+        return;
+      }
+
+      //RESPONSE
+      res.json({
+        success: true,
+        message: "User deleted successfully!",
+        result: result.rowsAffected,
+      });
+    }
+  );
+}
+
+module.exports = { addNewUser, userLogin, editUser, deleteUser };
