@@ -57,7 +57,7 @@ function getTrendingMeals(req, res) {
     FROM order_items oi
     JOIN menu_items mi ON oi.meal_id = mi.meal_id
     GROUP BY mi.name
-    ORDER BY total_sales DESC`,
+    ORDER BY total_sales DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -68,4 +68,22 @@ function getTrendingMeals(req, res) {
   );
 }
 
-module.exports = { addNewMeal, getAllMeals, getTrendingMeals };
+//tracking servings available on a particular day
+function getAvailableServings(req, res) {
+  let pool = req.pool;
+  let { page, pageSize } = req.query;
+  let offset = (Number(page) - 1) * Number(pageSize);
+
+  pool.query(
+    `SELECT * FROM history ORDER BY day DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    (err, result) => {
+      if (err) {
+        console.log("error occured in query", err);
+      } else {
+        res.json(result.recordset);
+      }
+    }
+  );
+}
+
+module.exports = { addNewMeal, getAllMeals, getTrendingMeals, getAvailableServings };

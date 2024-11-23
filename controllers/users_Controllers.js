@@ -5,7 +5,6 @@ const { newUserSchema, userLoginSchema } = require("../validators/validators");
 //get all users
 function getAllStaffs(req, res) {
   let pool = req.pool;
-
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
