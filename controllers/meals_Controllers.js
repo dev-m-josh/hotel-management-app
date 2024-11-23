@@ -1,4 +1,7 @@
-const { newMealSchema } = require("../validators/validators");
+const {
+  newMealSchema,
+  availableServingsSchema,
+} = require("../validators/validators");
 //GET ALL MEALS
 function getAllMeals(req, res) {
   let pool = req.pool;
@@ -75,7 +78,7 @@ function getAvailableServings(req, res) {
   let offset = (Number(page) - 1) * Number(pageSize);
 
   pool.query(
-    `SELECT * FROM history ORDER BY day DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    `SELECT * FROM available_servings_history ORDER BY day DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -86,4 +89,46 @@ function getAvailableServings(req, res) {
   );
 }
 
-module.exports = { addNewMeal, getAllMeals, getTrendingMeals, getAvailableServings };
+//ADD SERVINGS AVAILABLE
+function addAvailableServings(req, res) {
+  let pool = req.pool;
+  let servings = req.body;
+
+  //validate
+  const { error, value } = availableServingsSchema.validate(servings, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    res.json(error.details);
+    return;
+  }
+
+  pool.query(
+    `INSERT INTO available_servings_history ( meal_id, available_servings)
+    VALUES ('${value.meal_id}', '${value.available_servings}')`,
+    (err, result) => {
+      //ERROR AND RESPONSE
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      } else {
+        res.json({
+          success: true,
+          message: "available_servings set successfully"
+        });
+      }
+    }
+  );
+}
+
+module.exports = {
+  addNewMeal,
+  getAllMeals,
+  getTrendingMeals,
+  getAvailableServings,
+  addAvailableServings
+};
