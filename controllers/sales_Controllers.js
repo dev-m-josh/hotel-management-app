@@ -61,4 +61,71 @@ JOIN
   );
 }
 
-module.exports = { salesForEachOrder, salesForAllOrders };
+//sales for today
+function salesForToday(req, res) {
+  let pool = req.pool;
+  pool.query(
+    `SELECT 
+    SUM(oi.quantity * mi.price) AS total_sales
+FROM 
+    order_items oi
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+JOIN
+    orders o ON oi.order_id = o.order_id
+WHERE 
+    o.created_at >= CAST(GETDATE() AS DATE)`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          message: "No sales made today",
+        });
+      } else {
+        res.json(result.recordset);
+      }
+    }
+  );
+}
+
+//sales for previous day
+function previousdaySales(req, res) {
+  let pool = req.pool;
+  pool.query(
+    `SELECT 
+    SUM(oi.quantity * mi.price) AS total_sales_yesterday
+FROM 
+    order_items oi
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+JOIN 
+    orders o ON oi.order_id = o.order_id
+WHERE 
+    o.created_at >= CAST(DATEADD(DAY, -1, GETDATE()) AS DATE)  
+    AND o.created_at < CAST(GETDATE() AS DATE)`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          message: "No sales made yesterday",
+        });
+      } else {
+        res.json(result.recordset);
+      }
+    }
+  );
+}
+
+module.exports = { salesForEachOrder, salesForAllOrders, salesForToday, previousdaySales };
