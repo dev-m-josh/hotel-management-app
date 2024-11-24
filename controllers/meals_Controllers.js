@@ -69,7 +69,7 @@ function getTrendingMeals(req, res) {
       }
     }
   );
-}
+};
 
 //tracking servings available on a particular day
 function getAvailableServings(req, res) {
