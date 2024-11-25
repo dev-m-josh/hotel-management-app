@@ -56,11 +56,14 @@ function getTrendingMeals(req, res) {
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
-    `SELECT mi.name, SUM(oi.quantity) AS total_sales
-    FROM order_items oi
-    JOIN menu_items mi ON oi.meal_id = mi.meal_id
-    GROUP BY mi.name
-    ORDER BY total_sales DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    `SELECT mi.name, 
+       SUM(oi.quantity) AS total_sales,
+       SUM(oi.quantity * mi.price) AS total_revenue
+FROM order_items oi
+JOIN menu_items mi ON oi.meal_id = mi.meal_id
+GROUP BY mi.name
+ORDER BY total_revenue DESC
+ OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
