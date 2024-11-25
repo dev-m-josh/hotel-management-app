@@ -1,4 +1,7 @@
-const { newMealSchema } = require("../validators/validators");
+const {
+  newMealSchema,
+  availableServingsSchema,
+} = require("../validators/validators");
 //GET ALL MEALS
 function getAllMeals(req, res) {
   let pool = req.pool;
@@ -57,7 +60,25 @@ function getTrendingMeals(req, res) {
     FROM order_items oi
     JOIN menu_items mi ON oi.meal_id = mi.meal_id
     GROUP BY mi.name
-    ORDER BY total_sales DESC`,
+    ORDER BY total_sales DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    (err, result) => {
+      if (err) {
+        console.log("error occured in query", err);
+      } else {
+        res.json(result.recordset);
+      }
+    }
+  );
+};
+
+//tracking servings available on a particular day
+function getAvailableServings(req, res) {
+  let pool = req.pool;
+  let { page, pageSize } = req.query;
+  let offset = (Number(page) - 1) * Number(pageSize);
+
+  pool.query(
+    `SELECT * FROM available_servings_history ORDER BY day DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -68,4 +89,46 @@ function getTrendingMeals(req, res) {
   );
 }
 
-module.exports = { addNewMeal, getAllMeals, getTrendingMeals };
+//ADD SERVINGS AVAILABLE
+function addAvailableServings(req, res) {
+  let pool = req.pool;
+  let servings = req.body;
+
+  //validate
+  const { error, value } = availableServingsSchema.validate(servings, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    res.json(error.details);
+    return;
+  }
+
+  pool.query(
+    `INSERT INTO available_servings_history ( meal_id, available_servings)
+    VALUES ('${value.meal_id}', '${value.available_servings}')`,
+    (err, result) => {
+      //ERROR AND RESPONSE
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      } else {
+        res.json({
+          success: true,
+          message: "available_servings set successfully"
+        });
+      }
+    }
+  );
+}
+
+module.exports = {
+  addNewMeal,
+  getAllMeals,
+  getTrendingMeals,
+  getAvailableServings,
+  addAvailableServings
+};

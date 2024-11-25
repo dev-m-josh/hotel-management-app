@@ -21,6 +21,12 @@ const userLoginSchema = joi.object({
     user_email: joi.string().email().required(),
     user_password: joi.string().min(8).max(64).required(),
     user_role: joi.string().required()
-})
+});
 
-module.exports = { newMealSchema, newUserSchema, userLoginSchema }
+//AVAILABLE SERVINGS SCHEMA
+const availableServingsSchema = joi.object({
+    meal_id: joi.number().required(),
+    available_servings: joi.number().required()
+});
+
+module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema }

@@ -4,6 +4,7 @@ const sql  =require("mssql");
 const { authRouter } = require('./routers/auth_routers');
 const { mealsRouter } = require('./routers/meals_Routers');
 const { usersRouter } = require("./routers/users_Routers");
+const { salesRouter } = require('./routers/sales_Routers');
 const { verifyToken, errorHandler, routesErrorHandler } = require('./middleWares/middleware');
 require("dotenv").config();
 const {config} = require("./config/db_config");
@@ -30,6 +31,7 @@ async function startServer() {
         app.use(verifyToken);
         app.use(mealsRouter);
         app.use(usersRouter);
+        app.use(salesRouter);
         app.use(errorHandler);
         app.use('*', routesErrorHandler );
 
