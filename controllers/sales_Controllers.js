@@ -195,39 +195,7 @@ WHERE
       }
     }
   );
-}
-
-//meals and their sales
-function mealSales(req, res) {
-  let pool = req.pool;
-  pool.query(
-    `SELECT 
-    m.name AS meal_name, 
-    SUM(oi.quantity * m.price) AS total_sales
-FROM 
-    order_items oi
-JOIN 
-    menu_items m ON oi.meal_id = m.meal_id
-GROUP BY 
-    m.name`,
-    (err, result) => {
-      if (err) {
-        res.status(500).json({
-          success: false,
-          message: "Internal server error.",
-        });
-        console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No sales made yet",
-        });
-      } else {
-        res.json(result.recordset);
-      }
-    }
-  );
-}
+};
 
 module.exports = {
   salesForEachOrder,
@@ -236,5 +204,4 @@ module.exports = {
   previousdaySales,
   lastWeekSales,
   salesForSpecificTimeRange,
-  mealSales,
 };
