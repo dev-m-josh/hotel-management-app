@@ -87,7 +87,20 @@ function getAvailableServings(req, res) {
   let offset = (Number(page) - 1) * Number(pageSize);
 
   pool.query(
-    `SELECT * FROM available_servings_history ORDER BY day DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    `SELECT 
+    mi.meal_id,                                  
+    mi.name AS meal_name,                         
+    ash.available_servings,                       
+    ash.day                                       
+FROM 
+    menu_items mi
+JOIN 
+    available_servings ash 
+    ON mi.meal_id = ash.meal_id
+WHERE 
+    ash.day = (SELECT MAX(day) FROM available_servings WHERE meal_id = mi.meal_id)  
+ORDER BY 
+    mi.name OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -114,7 +127,7 @@ function addAvailableServings(req, res) {
   }
 
   pool.query(
-    `INSERT INTO available_servings_history ( meal_id, available_servings)
+    `INSERT INTO available_servings ( meal_id, available_servings)
     VALUES ('${value.meal_id}', '${value.available_servings}')`,
     (err, result) => {
       //ERROR AND RESPONSE
