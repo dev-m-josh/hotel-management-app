@@ -17,6 +17,41 @@ function getAllMeals(req, res) {
       }
     }
   );
+};
+
+//DELETE MEAL
+function deleteMeal(req, res) {
+  let pool = req.pool;
+  let requestedId = req.params.mealId;
+  pool.query(
+    `DELETE FROM menu_items WHERE meal_id = ${requestedId}`,
+    (err, result) => {
+      //ERROR CHECK
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+
+      //CHECK IF REQUESTED USER IS AVAILABLE
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          success: false,
+          message: "Meal not found!",
+        });
+        return;
+      }
+
+      //RESPONSE
+      res.json({
+        success: true,
+        message: "Meal deleted successfully!",
+        result: result.rowsAffected,
+      });
+    }
+  );
 }
 
 // ADD NEW MEAL
@@ -158,6 +193,7 @@ function addAvailableServings(req, res) {
 
 module.exports = {
   addNewMeal,
+  deleteMeal,
   getAllMeals,
   getTrendingMeals,
   getAvailableServings,
