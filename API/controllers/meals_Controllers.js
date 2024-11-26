@@ -48,9 +48,9 @@ function addNewMeal(req, res) {
       }
     }
   );
-}
+};
 
-//MOST TRENDING MEAL
+//MOST TRENDING MEALS
 function getTrendingMeals(req, res) {
   let pool = req.pool;
   let { page, pageSize } = req.query;
@@ -62,8 +62,7 @@ function getTrendingMeals(req, res) {
 FROM order_items oi
 JOIN menu_items mi ON oi.meal_id = mi.meal_id
 GROUP BY mi.name
-ORDER BY total_revenue DESC
- OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+ORDER BY total_revenue DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -72,7 +71,7 @@ ORDER BY total_revenue DESC
       }
     }
   );
-}
+};
 
 //tracking servings available on a particular day
 function getAvailableServings(req, res) {
