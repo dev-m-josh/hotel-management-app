@@ -29,11 +29,18 @@ const availableServingsSchema = joi.object({
     available_servings: joi.number().required()
 });
 
+//ORDER ITEMS SCHEMA
+const orderItemsSchema = joi.object({
+    order_id: joi.number().required(),
+    meal_id: joi.number().required(),
+    quantity: joi.number().required()
+});
+
 //ORDER SCHEMA
 const orderSchema = joi.object({
-    // order_id
-    // meal_id
-    // quantity
-})
+    waiter_id: joi.number().required(),
+    order_status: joi.string().required(),
+    table_number: joi.number().required()
+});
 
-module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema }
+module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema, orderItemsSchema, orderSchema }

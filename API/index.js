@@ -6,6 +6,7 @@ const { mealsRouter } = require('./routers/mealsRouters');
 const { usersRouter } = require("./routers/usersRouters");
 const { salesRouter } = require('./routers/salesRouters');
 const { freeRouter } = require("./routers/routers");
+const { ordersRouter } = require("./routers/ordersRouters");
 const { verifyToken, errorHandler, routesErrorHandler } = require('./middleWares/middleware');
 require("dotenv").config();
 const {config} = require("./config/db_config");
@@ -34,6 +35,7 @@ async function startServer() {
         app.use(verifyToken);
         app.use("/meals",mealsRouter);
         app.use("/users", usersRouter);
+        app.use("/orders", ordersRouter)
         app.use("/sales",salesRouter);
         app.all('*', routesErrorHandler );
         app.use(errorHandler);
