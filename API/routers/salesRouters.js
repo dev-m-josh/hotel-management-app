@@ -4,7 +4,7 @@ const {
   salesForEachOrder,
   salesForToday,
   salesForSpecificTimeRange,
-} = require("../controllers/sales_Controllers");
+} = require("../controllers/salesControllers");
 salesRouter.get("/orders", salesForEachOrder);
 salesRouter.get("/today", salesForToday);
 salesRouter.get("/timespan", salesForSpecificTimeRange);

@@ -17,7 +17,7 @@ function getAllMeals(req, res) {
       }
     }
   );
-};
+}
 
 //DELETE MEAL
 function deleteMeal(req, res) {
@@ -78,6 +78,41 @@ function addNewMeal(req, res) {
       } else {
         res.status(201).json({
           message: "Meal added successfully",
+        });
+      }
+    }
+  );
+}
+
+//EDIT A MEAL
+function editMeal(req, res) {
+  let pool = req.pool;
+  let requestedMealId = req.params.mealId;
+  let mealEdits = req.body;
+  pool.query(
+    `UPDATE menu_items
+      SET name = '${mealEdits.name}', category = '${mealEdits.category}', description = '${mealEdits.description}', price = '${mealEdits.price}' WHERE meal_id = '${requestedMealId}'`,
+    (err, result) => {
+      console.log(result)
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      // Check if any rows were affected
+      if (result.rowsAffected[0] === 0) {
+        return res.status(404).json({
+          success: false,
+          message: `Meal with ID ${userToEditId} not found.`,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "Edit was successfully done.",
+          rowsAffected: result.rowsAffected,
+          newUserDetails: mealEdits,
         });
       }
     }
@@ -186,10 +221,42 @@ function addAvailableServings(req, res) {
       }
     }
   );
-};
+}
 
-//EDIT AVAILABLE SERVINGS
+//DELETE AVAILABLE SERVINGS
+function deleteAvailableServings(req, res) {
+  let pool = req.pool;
+  let requestedId = req.params.servingsId;
+  pool.query(
+    `DELETE FROM available_servings WHERE meal_id = ${requestedId}`,
+    (err, result) => {
+      //ERROR CHECK
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
 
+      //CHECK IF REQUESTED USER IS AVAILABLE
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          success: false,
+          message: "No available servings",
+        });
+        return;
+      }
+
+      //RESPONSE
+      res.json({
+        success: true,
+        message: "Servings deleted successfully!",
+        result: result.rowsAffected,
+      });
+    }
+  );
+}
 
 module.exports = {
   addNewMeal,
@@ -198,4 +265,6 @@ module.exports = {
   getTrendingMeals,
   getAvailableServings,
   addAvailableServings,
+  deleteAvailableServings,
+  editMeal,
 };

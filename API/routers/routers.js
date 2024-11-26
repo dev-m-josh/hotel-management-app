@@ -1,6 +1,6 @@
 const freeRouter = require("express").Router();
-const { getAllMeals } = require('../controllers/meals_Controllers');
-const { addNewUser} = require('../controllers/users_Controllers');
+const { getAllMeals } = require('../controllers/mealsControllers');
+const { addNewUser} = require('../controllers/usersControllers');
 
 freeRouter.get('/meals', getAllMeals);
 freeRouter.post('/users', addNewUser);

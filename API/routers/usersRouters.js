@@ -1,5 +1,5 @@
 const usersRouter = require("express").Router();
-const { userLogin, editUser, deleteUser, getAllStaffs } = require('../controllers/users_Controllers')
+const { editUser, deleteUser, getAllStaffs } = require('../controllers/usersControllers')
 
 usersRouter.get('/', getAllStaffs);
 usersRouter.put('/:userId', editUser);

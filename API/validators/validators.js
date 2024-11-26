@@ -29,4 +29,11 @@ const availableServingsSchema = joi.object({
     available_servings: joi.number().required()
 });
 
+//ORDER SCHEMA
+const orderSchema = joi.object({
+    // order_id
+    // meal_id
+    // quantity
+})
+
 module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema }
