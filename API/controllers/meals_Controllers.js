@@ -47,9 +47,9 @@ function addNewMeal(req, res) {
       }
     }
   );
-}
+};
 
-//MOST TRENDING MEAL
+//MOST TRENDING MEALS
 function getTrendingMeals(req, res) {
   let pool = req.pool;
   let { page, pageSize } = req.query;
@@ -65,7 +65,7 @@ JOIN
 JOIN 
     menu_items mi ON oi.meal_id = mi.meal_id
 WHERE 
-    o.created_at >= DATEADD(WEEK, -1, GETDATE())  -- Adjust time period here (last week)
+    o.created_at >= DATEADD(WEEK, -1, GETDATE())
 GROUP BY 
     mi.name
 ORDER BY 
