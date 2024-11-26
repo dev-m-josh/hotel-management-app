@@ -5,7 +5,6 @@ const {
 //GET ALL MEALS
 function getAllMeals(req, res) {
   let pool = req.pool;
-  console.log(req);
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
@@ -56,11 +55,21 @@ function getTrendingMeals(req, res) {
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
-    `SELECT mi.name, SUM(oi.quantity) AS total_sales
-    FROM order_items oi
-    JOIN menu_items mi ON oi.meal_id = mi.meal_id
-    GROUP BY mi.name
-    ORDER BY total_sales DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    `SELECT 
+    mi.name AS meal_name,
+    SUM(oi.quantity) AS total_orders
+FROM 
+    order_items oi
+JOIN 
+    orders o ON oi.order_id = o.order_id
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+WHERE 
+    o.created_at >= DATEADD(WEEK, -1, GETDATE())  -- Adjust time period here (last week)
+GROUP BY 
+    mi.name
+ORDER BY 
+    total_orders DESC OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
@@ -69,7 +78,7 @@ function getTrendingMeals(req, res) {
       }
     }
   );
-};
+}
 
 //tracking servings available on a particular day
 function getAvailableServings(req, res) {
@@ -118,7 +127,7 @@ function addAvailableServings(req, res) {
       } else {
         res.json({
           success: true,
-          message: "available_servings set successfully"
+          message: "available_servings set successfully",
         });
       }
     }
@@ -130,5 +139,5 @@ module.exports = {
   getAllMeals,
   getTrendingMeals,
   getAvailableServings,
-  addAvailableServings
+  addAvailableServings,
 };

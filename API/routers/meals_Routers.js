@@ -7,7 +7,7 @@ const {
   addAvailableServings,
 } = require("../controllers/meals_Controllers");
 
-mealsRouter.post("/meals", addNewMeal);
+mealsRouter.post("/", addNewMeal);
 mealsRouter.get("/available-servings-history", getAvailableServings);
 mealsRouter.get("/trending-meal", getTrendingMeals);
 mealsRouter.post("/available-servings-history", addAvailableServings);

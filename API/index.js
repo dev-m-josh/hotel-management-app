@@ -29,11 +29,12 @@ async function startServer() {
 
         app.use(authRouter);
         app.use(verifyToken);
-        app.use(mealsRouter);
-        app.use(usersRouter);
-        app.use(salesRouter);
+        app.use("/meals",mealsRouter);
+        app.use("/users", usersRouter);
+        app.use("/sales",salesRouter);
+        app.all('*', routesErrorHandler );
         app.use(errorHandler);
-        app.use('*', routesErrorHandler );
+
 
         const port = 3000;
         app.listen(port, ()=>{

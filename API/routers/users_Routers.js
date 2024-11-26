@@ -1,8 +1,8 @@
 const usersRouter = require("express").Router();
 const { userLogin, editUser, deleteUser, getAllStaffs } = require('../controllers/users_Controllers')
 
-usersRouter.get('/users', getAllStaffs);
-usersRouter.post('/users/login', userLogin);
-usersRouter.put('/users/:userId', editUser);
-usersRouter.delete('/users/:userId', deleteUser);
+usersRouter.get('/', getAllStaffs);
+usersRouter.post('/login', userLogin);
+usersRouter.put('/:userId', editUser);
+usersRouter.delete('/:userId', deleteUser);
 module.exports = { usersRouter }
