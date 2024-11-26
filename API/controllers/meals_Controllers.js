@@ -88,17 +88,23 @@ function getAvailableServings(req, res) {
 
   pool.query(
     `SELECT 
-    mi.meal_id,                                  
-    mi.name AS meal_name,                         
-    ash.available_servings,                       
-    ash.day                                       
+    mi.meal_id,                               
+    mi.name AS meal_name,                     
+    ash.available_servings - COALESCE(SUM(oi.quantity), 0) AS available_servings,  
+    ash.day                                    
 FROM 
     menu_items mi
 JOIN 
     available_servings ash 
     ON mi.meal_id = ash.meal_id
+LEFT JOIN 
+    order_items oi 
+    ON mi.meal_id = oi.meal_id
+    AND oi.order_id IN (SELECT order_id FROM orders WHERE order_status = 'Served')  
 WHERE 
     ash.day = (SELECT MAX(day) FROM available_servings WHERE meal_id = mi.meal_id)  
+GROUP BY 
+    mi.meal_id, mi.name, ash.available_servings, ash.day  
 ORDER BY 
     mi.name OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
@@ -145,7 +151,10 @@ function addAvailableServings(req, res) {
       }
     }
   );
-}
+};
+
+//EDIT AVAILABLE SERVINGS
+
 
 module.exports = {
   addNewMeal,
