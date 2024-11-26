@@ -47,7 +47,7 @@ function addNewMeal(req, res) {
       }
     }
   );
-};
+}
 
 //MOST TRENDING MEALS
 function getTrendingMeals(req, res) {
