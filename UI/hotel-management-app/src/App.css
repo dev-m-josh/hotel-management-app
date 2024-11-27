@@ -18,8 +18,10 @@
   }
   
   .logo h1 {
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 25px;
+    color: #FF7F50;
+    text-shadow: 1px 1px 1px #FF7F50;
+    font-weight: bolder;
     margin: 0 0 0 30px;
   }
   
@@ -71,6 +73,7 @@
   .icon{
     font-size: 25px;
     color: rgb(43, 43, 43);
+    cursor: pointer;
   }
   
   .cart-number {
@@ -101,4 +104,3 @@
   .signup-btn:hover {
     background-color: #519254;
   }
-  

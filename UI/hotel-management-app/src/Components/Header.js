@@ -5,7 +5,7 @@ function Header() {
   return (
     <header className="header">
       <div className="logo">
-        <h1>Food</h1>
+        <h1>FoodX</h1>
       </div>
 
       <nav className="header-details">
