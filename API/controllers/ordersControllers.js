@@ -128,6 +128,36 @@ function updateAnOrder(req, res) {
       }
     }
   );
+};
+
+//SELECT ORDER ITEMS
+function getOrderItems(req, res) {
+  let pool = req.pool;
+  pool.query(`SELECT 
+    oi.order_items_id, 
+    oi.order_id, 
+    oi.meal_id, 
+    mi.name AS meal_name,
+    oi.quantity
+FROM 
+    order_items oi
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id`, (err, result) =>{
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          message: "No selected order ietms",
+        });
+      } else {
+        res.json(result.recordset);
+      }
+    })
 }
 
-module.exports = { getOrders, placeAnOrder, deleteAnOrder, updateAnOrder };
+module.exports = { getOrders, placeAnOrder, deleteAnOrder, updateAnOrder, getOrderItems };
