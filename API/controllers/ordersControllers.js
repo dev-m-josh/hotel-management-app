@@ -229,7 +229,39 @@ function editOrderItems(req, res) {
   );
 }
 
+//DELETE ORDER ITEM
+function deleteOrderItem(req, res) {
+  let pool = req.pool;
+  let itemToDelete = req.params.itemId;
+  pool.query(
+    `DELETE FROM order_items WHERE order_items_id = ${itemToDelete}`,
+    (err, result) => {
+      //ERROR CHECK
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
 
+      //CHECK IF REQUESTED USER IS AVAILABLE
+      if (result.rowsAffected[0] === 0) {
+        res.json({
+          success: false,
+          message: "Item not found!",
+        });
+        return;
+      }
+
+      //RESPONSE
+      res.json({
+        success: true,
+        message: "Item deleted successfully!"
+      });
+    }
+  );
+}
 
 module.exports = {
   getOrders,
@@ -239,4 +271,5 @@ module.exports = {
   getOrderItems,
   selectOrderItems,
   editOrderItems,
+  deleteOrderItem,
 };
