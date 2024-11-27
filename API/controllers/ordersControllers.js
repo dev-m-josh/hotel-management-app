@@ -1,4 +1,8 @@
-const { orderSchema, orderEditSchema } = require("../validators/validators");
+const {
+  orderSchema,
+  orderEditSchema,
+  orderItemsSchema,
+} = require("../validators/validators");
 
 //GET ALL ORDERS
 function getOrders(req, res) {
@@ -123,17 +127,18 @@ function updateAnOrder(req, res) {
         res.json({
           success: true,
           message: "Order status updated successfully.",
-          orderStatus: orderEditDetails
+          orderStatus: orderEditDetails,
         });
       }
     }
   );
-};
+}
 
 //SELECT ORDER ITEMS
 function getOrderItems(req, res) {
   let pool = req.pool;
-  pool.query(`SELECT 
+  pool.query(
+    `SELECT 
     oi.order_items_id, 
     oi.order_id, 
     oi.meal_id, 
@@ -142,7 +147,8 @@ function getOrderItems(req, res) {
 FROM 
     order_items oi
 JOIN 
-    menu_items mi ON oi.meal_id = mi.meal_id`, (err, result) =>{
+    menu_items mi ON oi.meal_id = mi.meal_id`,
+    (err, result) => {
       if (err) {
         res.status(500).json({
           success: false,
@@ -152,12 +158,50 @@ JOIN
       }
       if (result.rowsAffected[0] === 0) {
         res.json({
-          message: "No selected order ietms",
+          message: "No selected order items",
         });
       } else {
         res.json(result.recordset);
       }
-    })
+    }
+  );
 }
 
-module.exports = { getOrders, placeAnOrder, deleteAnOrder, updateAnOrder, getOrderItems };
+//SELECT ORDER ITEMS
+function selectOrderItems(req, res) {
+  let pool = req.pool;
+  let addedItem = req.body;
+  // Validation
+  const { error, value } = orderItemsSchema.validate(addedItem, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    return res.status(400).json({ errors: error.details });
+  }
+
+  pool.query(
+    `insert into order_items (order_id, meal_id, quantity)
+VALUES ('${value.order_id}', '${value.meal_id}', '${value.quantity}')`,
+    (err, result) => {
+      
+      if (err) {
+        console.error("Error inserting new meal:", err);
+      } else {
+        res.status(201).json({
+          message: "Items added successfully",
+          addedItem
+        });
+      }
+    }
+  );
+}
+
+module.exports = {
+  getOrders,
+  placeAnOrder,
+  deleteAnOrder,
+  updateAnOrder,
+  getOrderItems,
+  selectOrderItems,
+};

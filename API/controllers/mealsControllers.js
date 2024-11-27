@@ -78,6 +78,7 @@ function addNewMeal(req, res) {
       } else {
         res.status(201).json({
           message: "Meal added successfully",
+          newMeal
         });
       }
     }
@@ -198,8 +199,7 @@ function addAvailableServings(req, res) {
   });
   if (error) {
     console.log(error);
-    res.json(error.details);
-    return;
+    return res.status(400).json({ errors: error.details });
   }
 
   pool.query(
@@ -217,6 +217,7 @@ function addAvailableServings(req, res) {
         res.json({
           success: true,
           message: "available_servings set successfully",
+          servings
         });
       }
     }
