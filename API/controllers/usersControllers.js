@@ -16,13 +16,8 @@ function getAllStaffs(req, res) {
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No users yet",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ users: result.recordset });
       }
     }
   );

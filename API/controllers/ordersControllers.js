@@ -14,13 +14,8 @@ function getOrders(req, res) {
         message: "Internal server error.",
       });
       console.log("Error occured in query", err);
-    }
-    if (result.rowsAffected[0] === 0) {
-      res.json({
-        message: "No orders yet",
-      });
     } else {
-      res.json(result.recordset);
+      res.json({ orders: result.recordset });
     }
   });
 }
@@ -155,13 +150,8 @@ JOIN
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No selected order items",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ orderItems: result.recordset });
       }
     }
   );
@@ -257,7 +247,7 @@ function deleteOrderItem(req, res) {
       //RESPONSE
       res.json({
         success: true,
-        message: "Item deleted successfully!"
+        message: "Item deleted successfully!",
       });
     }
   );
