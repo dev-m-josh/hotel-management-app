@@ -184,18 +184,52 @@ function selectOrderItems(req, res) {
     `insert into order_items (order_id, meal_id, quantity)
 VALUES ('${value.order_id}', '${value.meal_id}', '${value.quantity}')`,
     (err, result) => {
-      
       if (err) {
         console.error("Error inserting new meal:", err);
       } else {
         res.status(201).json({
           message: "Items added successfully",
-          addedItem
+          addedItem,
         });
       }
     }
   );
 }
+
+//EDIT ORDER ITEMS
+function editOrderItems(req, res) {
+  let pool = req.pool;
+  let itemToEdit = req.params.itemId;
+  let edits = req.body;
+  pool.query(
+    `UPDATE order_items
+      SET quantity = '${edits.quantity}' WHERE order_id = '${itemToEdit}'`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      // Check if any rows were affected
+      if (result.rowsAffected[0] === 0) {
+        return res.status(404).json({
+          success: false,
+          message: `Order item with ID ${itemToEdit} not found.`,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "Order item updated successfully.",
+          quantity: edits,
+        });
+      }
+    }
+  );
+}
+
+
 
 module.exports = {
   getOrders,
@@ -204,4 +238,5 @@ module.exports = {
   updateAnOrder,
   getOrderItems,
   selectOrderItems,
+  editOrderItems,
 };
