@@ -43,4 +43,9 @@ const orderSchema = joi.object({
     table_number: joi.number().required()
 });
 
-module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema, orderItemsSchema, orderSchema }
+//ORDER EDIT SCHEMA
+const orderEditSchema = joi.object({
+    order_status: joi.string().required()
+});
+
+module.exports = { newMealSchema, newUserSchema, userLoginSchema, availableServingsSchema, orderItemsSchema, orderSchema, orderEditSchema }

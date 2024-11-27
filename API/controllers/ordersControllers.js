@@ -1,4 +1,4 @@
-const { orderSchema } = require("../validators/validators");
+const { orderSchema, orderEditSchema } = require("../validators/validators");
 
 //GET ALL ORDERS
 function getOrders(req, res) {
@@ -80,10 +80,54 @@ function deleteAnOrder(req, res) {
       res.json({
         success: true,
         message: "Order deleted successfully!",
-        result: result.rowsAffected
+        result: result.rowsAffected,
       });
     }
   );
 }
 
-module.exports = { getOrders, placeAnOrder, deleteAnOrder };
+//EDIT AN ORDER
+function updateAnOrder(req, res) {
+  let pool = req.pool;
+  let orderToEdit = req.params.orderId;
+  let orderEditDetails = req.body;
+
+  //validation
+  const { error, value } = orderEditSchema.validate(orderEditDetails, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    res.send(error.details.message);
+    return;
+  }
+
+  pool.query(
+    `UPDATE orders
+      SET order_status = '${value.order_status}' WHERE order_id = '${orderToEdit}'`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      }
+      // Check if any rows were affected
+      if (result.rowsAffected[0] === 0) {
+        return res.status(404).json({
+          success: false,
+          message: `Order with ID ${orderToEdit} not found.`,
+        });
+      } else {
+        res.json({
+          success: true,
+          message: "Order status updated successfully.",
+          orderStatus: orderEditDetails
+        });
+      }
+    }
+  );
+}
+
+module.exports = { getOrders, placeAnOrder, deleteAnOrder, updateAnOrder };
