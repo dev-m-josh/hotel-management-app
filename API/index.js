@@ -2,12 +2,15 @@ const express = require("express");
 const cors = require('cors');
 const sql  =require("mssql");
 const { authRouter } = require('./routers/auth_routers');
-const { mealsRouter } = require('./routers/meals_Routers');
-const { usersRouter } = require("./routers/users_Routers");
-const { salesRouter } = require('./routers/sales_Routers');
+const { mealsRouter } = require('./routers/mealsRouters');
+const { usersRouter } = require("./routers/usersRouters");
+const { salesRouter } = require('./routers/salesRouters');
+const { freeRouter } = require("./routers/routers");
+const { ordersRouter } = require("./routers/ordersRouters");
 const { verifyToken, errorHandler, routesErrorHandler } = require('./middleWares/middleware');
 require("dotenv").config();
 const {config} = require("./config/db_config");
+
 
 async function startServer() {
     const app = express();
@@ -27,13 +30,16 @@ async function startServer() {
             next()
         })
 
+        app.use(freeRouter)
         app.use(authRouter);
         app.use(verifyToken);
-        app.use(mealsRouter);
-        app.use(usersRouter);
-        app.use(salesRouter);
+        app.use("/meals",mealsRouter);
+        app.use("/users", usersRouter);
+        app.use("/orders", ordersRouter)
+        app.use("/sales",salesRouter);
+        app.all('*', routesErrorHandler );
         app.use(errorHandler);
-        app.use('*', routesErrorHandler );
+
 
         const port = 3000;
         app.listen(port, ()=>{
