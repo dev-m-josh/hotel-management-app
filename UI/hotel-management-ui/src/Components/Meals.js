@@ -5,7 +5,7 @@ function Meals() {
   const [loading, setLoading] = useState(true); // State for loading indicator
   const [error, setError] = useState(null); // State for error handling
   const [page, setPage] = useState(1); // Current page for pagination
-  const [pageSize] = useState(2); // Number of items per page
+  const [pageSize] = useState(10); // Number of items per page
   const [totalMeals, setTotalMeals] = useState(0); // Total meals for pagination calculation
 
   useEffect(() => {
@@ -52,7 +52,7 @@ function Meals() {
           meals.map((meal) => (
             <div key={meal.meal_id} className="meal-card">
               <h3>{meal.name}</h3>
-              <h4>{meal.category}</h4>
+              <h4><span>Category: </span>{meal.category}</h4>
               <p>{meal.description}</p>
               <h3>${meal.price}</h3>
               <button className="add-to-order">Add to Order</button>
