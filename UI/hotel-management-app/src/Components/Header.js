@@ -37,14 +37,6 @@ function Header() {
           >
             Staffs
           </NavLink>
-          <NavLink
-            to="/sales"
-            className={({ isActive }) =>
-              isActive ? "nav-link active" : "nav-link"
-            }
-          >
-            Sales
-          </NavLink>
         </div>
 
         <div className="cart-signup">
@@ -52,6 +44,7 @@ function Header() {
             <FontAwesomeIcon className="icon" icon={faShoppingBasket} />
             <div className="cart-number">0</div>
           </div>
+          <NavLink className='login' to="/login">Login</NavLink>
           <button className="signup-btn">Sign Up</button>
         </div>
       </nav>
