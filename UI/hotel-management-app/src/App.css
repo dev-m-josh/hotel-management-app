@@ -92,6 +92,17 @@
     justify-content: center;
     align-items: center;
   }
+
+  .login{
+    text-decoration: none;
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 10px;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    font-size: 14px;
+  }
   
   .signup-btn {
     background-color: #4CAF50;
@@ -231,4 +242,77 @@ div {
 .pagination-button:disabled {
   background-color: #bdc3c7;
   cursor: not-allowed;
+}
+
+
+/* Styles for login form */
+.login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-shadow: 0 4px 6px rgb(160, 154, 154);
+}
+
+form{
+  width: 100%;
+}
+
+.login-form h2 {
+  align-self: center;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-form div {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.login-form label {
+  margin-bottom: 5px;
+}
+
+.login-form input {
+  width: 97%;
+  padding: 8px 0 8px 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: .3s ease-in-out;
+}
+
+.login-form button:hover{
+  background-color: #40c745;
+}
+
+.login-form button:disabled {
+  background-color: #ddd;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
 }
