@@ -6,22 +6,45 @@ const { newUserSchema, userLoginSchema } = require("../validators/validators");
 function getAllStaffs(req, res) {
   let pool = req.pool;
   let { page, pageSize } = req.query;
-  let offset = (Number(page) - 1) * Number(pageSize);
-  pool.query(
-    `SELECT * FROM users ORDER BY user_id OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
-    (err, result) => {
-      if (err) {
-        res.status(500).json({
-          success: false,
-          message: "Internal server error.",
-        });
-        console.log("Error occured in query", err);
-      } else {
-        res.json({ users: result.recordset });
-      }
+  page = Number(page) || 1;  // Default to page 1 if not provided
+  pageSize = Number(pageSize) || 10;  // Default to page size of 10 if not provided
+
+  let offset = (page - 1) * pageSize;
+
+  // First, get the total number of users
+  pool.query("SELECT COUNT(*) AS totalCount FROM users", (err, countResult) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error while fetching user count.",
+      });
     }
-  );
+
+    const totalUsers = countResult.recordset[0].totalCount;
+    const totalPages = Math.ceil(totalUsers / pageSize);  // Calculate total pages
+
+    //fetch the paginated users
+    pool.query(
+      `SELECT * FROM users ORDER BY user_id OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+      (err, result) => {
+        if (err) {
+          return res.status(500).json({
+            success: false,
+            message: "Internal server error while fetching staff data.",
+          });
+        }
+
+        // Return paginated users along with total pages
+        res.json({
+          staffs: result.recordset,   // Paginated staff data
+          totalPages: totalPages,     // Total number of pages
+          totalUsers: totalUsers,     // Total number of users 
+        });
+      }
+    );
+  });
 }
+
 
 //add new user
 async function addNewUser(req, res) {
@@ -38,8 +61,6 @@ async function addNewUser(req, res) {
 
   let password_hash = await bcrypt.hash(value.user_password, 5);
 
-  let token = await jwt.sign({ addedUser }, "youcanguessthisright");
-
   pool.query(
     `INSERT INTO users (username, user_email, user_password, user_role)
 VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value.user_role}')`,
@@ -47,12 +68,13 @@ VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value
       //ERROR AND RESPONSE
       if (err) {
         console.log("error occured in query", err);
+        return res.status(500).json({ error: "Internal Server Error" });
       } else {
-        res.json({
+        // Respond with success message and the inserted user data
+        res.status(201).json({
           success: true,
           message: "User added successfully",
-          addedUser,
-          token,
+          user: addedUser, // Return the created user
         });
       }
     }
@@ -72,6 +94,8 @@ async function userLogin(req, res) {
     console.log(error);
     return res.status(400).json({ errors: error.details });
   }
+  // Sanitize email to avoid case issues and spaces
+  value.user_email = value.user_email.trim().toLowerCase();
 
   let requestedUser = await pool.query(
     `select username, user_email, user_password, user_role from  users where user_email = '${value.user_email}'`

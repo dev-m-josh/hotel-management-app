@@ -13,14 +13,13 @@ const newMealSchema = joi.object({
     username: joi.string().required(),
     user_email: joi.string().email().required(),
     user_password: joi.string().min(8).max(64).required(),
-    user_role: joi.string().required()
+    user_role: joi.string().valid('waiter', 'admin', 'manager').required()
 });
 
 //USER LOGIN SCHEMA
 const userLoginSchema = joi.object({
     user_email: joi.string().email().required(),
-    user_password: joi.string().min(8).max(64).required(),
-    user_role: joi.string().required()
+    user_password: joi.string().min(8).max(64).required()
 });
 
 //AVAILABLE SERVINGS SCHEMA
