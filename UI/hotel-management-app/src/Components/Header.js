@@ -45,7 +45,7 @@ function Header() {
             <div className="cart-number">0</div>
           </div>
           <NavLink className='login' to="/login">Login</NavLink>
-          <button className="signup-btn">Sign Up</button>
+          <NavLink className='login' to="/sign-up">Sign Up</NavLink>
         </div>
       </nav>
     </header>

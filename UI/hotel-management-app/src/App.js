@@ -5,6 +5,7 @@ import Meals from "./Components/Meals";
 import Staffs from "./Components/Staffs";
 import "./App.css";
 import Login from "./Components/Login";
+import SignUp from "./Components/SignUp";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Meals />} />
           <Route path="/staffs" element={<Staffs />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/sign-up" element={<SignUp />} />
         </Routes>
       </div>
     </>
