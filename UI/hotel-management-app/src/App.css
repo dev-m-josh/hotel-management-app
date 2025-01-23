@@ -450,6 +450,15 @@ span {
   font-weight: bold;
 }
 
+.edit:hover{
+  background-color: rgb(241, 241, 79);
+}
+
 .delete{
   background-color: #3498DB;
+}
+
+.delete:hover{
+  background-color: rgb(241, 241, 79);
+
 }
