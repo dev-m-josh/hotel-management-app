@@ -7,7 +7,19 @@ const {
 //GET ALL ORDERS
 function getOrders(req, res) {
   let pool = req.pool;
-  pool.query(`select * from orders`, (err, result) => {
+  pool.query(`SELECT 
+    o.order_id,
+    mi.name AS meal_name,
+    oi.quantity
+FROM 
+    orders o
+JOIN 
+    order_items oi ON o.order_id = oi.order_id
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+ORDER BY 
+    o.order_id, mi.name;
+`, (err, result) => {
     if (err) {
       res.status(500).json({
         success: false,

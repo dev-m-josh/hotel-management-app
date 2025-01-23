@@ -190,20 +190,19 @@ function deleteUser(req, res) {
         console.log("Error occured in query", err);
       }
 
-      //CHECK IF REQUESTED USER IS AVAILABLE
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          success: false,
-          message: "User not found!",
-        });
-        return;
-      }
+      // //CHECK IF REQUESTED USER IS AVAILABLE
+      // if (result.rowsAffected[0] === 0) {
+      //   res.json({
+      //     success: false,
+      //     message: "User not found!",
+      //   });
+      //   return;
+      // }
 
       //RESPONSE
       res.json({
         success: true,
-        message: "User deleted successfully!",
-        result: result.rowsAffected,
+        message: "User deleted successfully!"
       });
     }
   );
