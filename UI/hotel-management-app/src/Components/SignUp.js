@@ -22,7 +22,7 @@ export default function SignUp() {
     };
 
     try {
-      // Send data to the backend server (assuming your backend runs on localhost:5000)
+      // Send data to the backend server
       const response = await axios.post("http://localhost:3000/users", userData);
       
       // If the request is successful
@@ -30,7 +30,7 @@ export default function SignUp() {
       alert("User signed up successfully!");
       
     } catch (error) {
-      // Handle error (e.g., invalid data or server error)
+      // Handle error 
       console.error("There was an error during sign-up", error);
       setErrorMessage("An error occurred. Please try again.");
     }

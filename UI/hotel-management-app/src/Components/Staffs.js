@@ -70,7 +70,7 @@ function Staffs() {
               <h4><span>Position: </span>{staff.user_role}</h4>
               <p><span>Email: </span>{staff.user_email}</p>
               <button className="edit">Edit</button>
-              <button className="delete">Delete</button>
+              <button className="delete">Fire</button>
             </div>
           ))
         )}

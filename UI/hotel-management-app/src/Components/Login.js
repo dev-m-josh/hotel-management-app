@@ -44,7 +44,7 @@ export default function Login() {
       }
     } catch (err) {
       // Handle errors
-      console.error("Login error:", err); // Log the error for debugging
+      console.error("Login error:", err); // Log the error 
       setError("Incorrect email or password");
     } finally {
       setLoading(false); // Set loading to false when the request is done
