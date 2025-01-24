@@ -17,17 +17,17 @@ function Meals() {
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-
+  
         const data = await response.json();
         setMeals(data.meals); // Update state with fetched meals
-
-        // If no meals are returned, we assume we have reached the end
-        if (data.meals.length === 0) {
-          setNoMoreMeals(true);
+  
+        // If no meals are returned
+        if (data.meals.length < pageSize) {
+          setNoMoreMeals(true); // If less than pageSize, no more meals to show
         } else {
           setNoMoreMeals(false);
         }
-
+  
       } catch (err) {
         console.error("Error fetching meals:", err);
         setError(err.message); // Handle errors if the request fails
@@ -35,9 +35,44 @@ function Meals() {
         setLoading(false); // Set loading to false once data is fetched
       }
     };
-
+  
     fetchMeals();
   }, [page, pageSize]); // Re-run the effect if page or pageSize changes
+  
+
+
+  const deleteMeal = async (mealId) => {
+    try {
+      // Get the token from localStorage (or wherever it's stored)
+      const token = localStorage.getItem('authToken');
+  
+      if (!token) {
+        throw new Error('You must be logged in to delete a meal.');
+      }
+  
+      const response = await fetch(`http://localhost:3000/meals/${mealId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Add the token to the request headers
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error deleting meal');
+      }
+  
+      // After deleting the meal, update the state to reflect the changes
+      setMeals(meals.filter(meal => meal.meal_id !== mealId));
+      alert('Meal deleted successfully!'); // show a success message
+    } catch (err) {
+      console.error('Error deleting meal:', err);
+      setError(err.message); // Set error state
+      alert('Failed to delete meal. Please try again.');
+    }
+  };
+  
+   
+
 
   if (loading) {
     return <div>Loading...</div>; // Display loading state while fetching data
@@ -61,7 +96,7 @@ function Meals() {
               <h4><span>Category: </span>{meal.category}</h4>
               <p>{meal.description}</p>
               <h3>${meal.price}</h3>
-              <button className="add-to-order">Add to Order</button>
+              <button className="delete-meal" onClick={() => deleteMeal(meal.meal_id)}>Delete</button>
             </div>
           ))
         )}
