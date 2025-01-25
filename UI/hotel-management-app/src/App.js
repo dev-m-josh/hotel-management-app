@@ -1,10 +1,9 @@
-
 import React from "react";
+import "./App.css"
 import { Routes, Route } from "react-router-dom";
 import Header from "./Components/Header";
-import Meals from "./Components/Meals";  
+import Meals from "./Components/Meals";
 import Staffs from "./Components/Staffs";
-import "./App.css";
 import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Orders from "./Components/Orders";
@@ -27,4 +26,3 @@ function App() {
 }
 
 export default App;
-
