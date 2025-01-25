@@ -16,13 +16,8 @@ function getAllStaffs(req, res) {
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No users yet",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ users: result.recordset });
       }
     }
   );
@@ -38,8 +33,7 @@ async function addNewUser(req, res) {
   });
   if (error) {
     console.log(error);
-    res.json(error.details);
-    return;
+    return res.status(400).json({ errors: error.details });
   }
 
   let password_hash = await bcrypt.hash(value.user_password, 5);
@@ -57,6 +51,7 @@ VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value
         res.json({
           success: true,
           message: "User added successfully",
+          addedUser,
           token,
         });
       }
@@ -75,8 +70,7 @@ async function userLogin(req, res) {
   });
   if (error) {
     console.log(error);
-    res.send(error.details.message);
-    return;
+    return res.status(400).json({ errors: error.details });
   }
 
   let requestedUser = await pool.query(
