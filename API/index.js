@@ -41,7 +41,7 @@ async function startServer() {
         app.use(errorHandler);
 
 
-        const port = 3000;
+        const port = 3500;
         app.listen(port, ()=>{
         console.log(`Sever listening to port: ${port}`)
         });

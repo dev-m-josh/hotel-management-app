@@ -1,53 +1,105 @@
 const {
   orderSchema,
-  orderEditSchema,
+  orderEditsSchema,
   orderItemsSchema,
+  orderStatusSchema,
 } = require("../validators/validators");
 
-//GET ALL ORDERS
+//GET COMPLETED ORDERS
 function getOrders(req, res) {
   let pool = req.pool;
-  pool.query(`select * from orders`, (err, result) => {
-    if (err) {
-      res.status(500).json({
-        success: false,
-        message: "Internal server error.",
-      });
-      console.log("Error occured in query", err);
+  let { page, pageSize } = req.query;
+  let offset = (Number(page) - 1) * Number(pageSize);
+  pool.query(
+    `SELECT 
+    o.order_id, 
+    oi.order_items_id, 
+    oi.quantity,
+    mi.name AS meal_name, 
+    mi.price AS meal_price,
+    (oi.quantity * mi.price) AS total_cost
+FROM 
+    orders o
+JOIN 
+    order_items oi ON o.order_id = oi.order_id
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+WHERE 
+    o.order_status = 'served'
+ORDER BY 
+    o.order_id, oi.order_items_id  OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY;
+`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      } else {
+        res.json(result.recordset);
+      }
     }
-    if (result.rowsAffected[0] === 0) {
-      res.json({
-        message: "No orders yet",
-      });
-    } else {
-      res.json(result.recordset);
+  );
+}
+
+//GET PENDING ORDERS
+function getPendingOrders(req, res) {
+  let pool = req.pool;
+  let { page, pageSize } = req.query;
+  let offset = (Number(page) - 1) * Number(pageSize);
+  pool.query(
+    `SELECT * 
+FROM orders 
+WHERE order_status = 'pending' 
+ORDER BY order_id  
+OFFSET ${offset} ROWS 
+FETCH NEXT ${pageSize} ROWS ONLY;
+`,
+    (err, result) => {
+      if (err) {
+        res.status(500).json({
+          success: false,
+          message: "Internal server error.",
+        });
+        console.log("Error occured in query", err);
+      } else {
+        res.json(result.recordset);
+      }
     }
-  });
+  );
 }
 
 //PLACE AN ORDER
 function placeAnOrder(req, res) {
   let pool = req.pool;
   let placedOrder = req.body;
-  //validation
+
+  // Validation
   const { error, value } = orderSchema.validate(placedOrder, {
     abortEarly: false,
   });
+
   if (error) {
-    console.log(error);
-    res.json(error.details);
-    return;
+    return res.status(400).json({ errors: error.details });
   }
 
+  // Your current query
   pool.query(
     `INSERT INTO orders (waiter_id, table_number, order_status)
-VALUES ('${value.waiter_id}', '${value.table_number}', '${value.order_status}')`,
+     OUTPUT INSERTED.order_id
+     VALUES ('${value.waiter_id}', '${value.table_number}', '${value.order_status}')`,
     (err, result) => {
       if (err) {
-        console.error("Error inserting new meal:", err);
+        console.error("Error inserting new order:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
       } else {
+        const orderId = result.recordset[0].order_id; // Access the generated order_id
+
+        // Respond with the generated order_id
         res.status(201).json({
-          message: "Order placed successfully",
+          message: "Order created successfully",
+          orderId: orderId, // Send back the generated ID
           placedOrder,
         });
       }
@@ -71,7 +123,7 @@ function deleteAnOrder(req, res) {
         console.log("Error occured in query", err);
       }
 
-      //CHECK IF REQUESTED USER IS AVAILABLE
+      //CHECK IF REQUESTED ORDER IS AVAILABLE
       if (result.rowsAffected[0] === 0) {
         res.json({
           success: false,
@@ -97,7 +149,7 @@ function updateAnOrder(req, res) {
   let orderEditDetails = req.body;
 
   //validation
-  const { error, value } = orderEditSchema.validate(orderEditDetails, {
+  const { error, value } = orderStatusSchema.validate(orderEditDetails, {
     abortEarly: false,
   });
   if (error) {
@@ -118,7 +170,7 @@ function updateAnOrder(req, res) {
         console.log("Error occured in query", err);
       }
       // Check if any rows were affected
-      if (result.rowsAffected[0] === 0) {
+      if (!result.rowsAffected) {
         return res.status(404).json({
           success: false,
           message: `Order with ID ${orderToEdit} not found.`,
@@ -134,20 +186,28 @@ function updateAnOrder(req, res) {
   );
 }
 
-//SELECT ORDER ITEMS
+/*GET ORDER ITEMS*/
 function getOrderItems(req, res) {
+  let orderId = req.params.orderId;
   let pool = req.pool;
   pool.query(
     `SELECT 
+    o.order_id, 
     oi.order_items_id, 
-    oi.order_id, 
-    oi.meal_id, 
-    mi.name AS meal_name,
-    oi.quantity
+    oi.quantity,
+    mi.name AS meal_name, 
+    mi.price AS meal_price,
+    (oi.quantity * mi.price) AS total_cost
 FROM 
-    order_items oi
+    orders o
 JOIN 
-    menu_items mi ON oi.meal_id = mi.meal_id`,
+    order_items oi ON o.order_id = oi.order_id
+JOIN 
+    menu_items mi ON oi.meal_id = mi.meal_id
+WHERE 
+    o.order_status = 'pending' AND o.order_id = ${orderId}
+ORDER BY 
+    o.order_id, oi.order_items_id`,
     (err, result) => {
       if (err) {
         res.status(500).json({
@@ -155,6 +215,7 @@ JOIN
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
+        return;
       }
       if (result.rowsAffected[0] === 0) {
         res.json({
@@ -167,34 +228,93 @@ JOIN
   );
 }
 
-//SELECT ORDER ITEMS
-function selectOrderItems(req, res) {
-  let pool = req.pool;
-  let addedItem = req.body;
-  // Validation
-  const { error, value } = orderItemsSchema.validate(addedItem, {
-    abortEarly: false,
-  });
-  if (error) {
-    console.log(error);
-    return res.status(400).json({ errors: error.details });
-  }
+const updateOrderItems = async (req, res) => {
+  const receivedItems = req.body;
+  console.log("Items received:", receivedItems);
 
-  pool.query(
-    `insert into order_items (order_id, meal_id, quantity)
-VALUES ('${value.order_id}', '${value.meal_id}', '${value.quantity}')`,
-    (err, result) => {
-      if (err) {
-        console.error("Error inserting new meal:", err);
-      } else {
-        res.status(201).json({
-          message: "Items added successfully",
-          addedItem,
-        });
-      }
+  try {
+    // Validate the array of items using the defined Joi schema
+    const { error } = orderEditsSchema.validate(receivedItems);
+
+    if (error) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: error.details,
+      });
     }
-  );
-}
+
+    // Ensure that quantity is a number
+    receivedItems.forEach((item) => {
+      item.quantity = parseInt(item.quantity, 10);
+    });
+
+    // Construct the values string for insertion
+    const values = receivedItems
+      .map((item) => `(${orderId}, ${item.meal_id}, ${item.quantity})`)
+      .join(", ");
+
+    const query = `
+      INSERT INTO order_items (order_id, meal_id, quantity)
+      VALUES ${values};
+    `;
+
+    await req.pool.query(query); // Execute the query with all values at once
+    console.log("Order Items Inserted:", receivedItems);
+
+    // Send a proper response
+    res.status(201).json({
+      message: "Items added successfully",
+      order_items: receivedItems
+    });
+  } catch (err) {
+    console.error("Error inserting new meal:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//SELECT ORDER ITEMS
+const selectOrderItems = async (req, res) => {
+  const receivedItems = req.body;
+  console.log("Items received:", receivedItems);
+
+  try {
+    // Validate the array of items using the defined Joi schema
+    const { error } = orderItemsSchema.validate(receivedItems);
+
+    if (error) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: error.details,
+      });
+    }
+
+    // Ensure that quantity is a number
+    receivedItems.forEach((item) => {
+      item.quantity = parseInt(item.quantity, 10); // Convert to number if it's a string
+    });
+
+    // Construct the values string for insertion
+    const values = receivedItems
+      .map((item) => `(${item.order_id}, ${item.meal_id}, ${item.quantity})`)
+      .join(", ");
+
+    const query = `
+      INSERT INTO order_items (order_id, meal_id, quantity)
+      VALUES ${values};
+    `;
+
+    await req.pool.query(query); // Execute the query with all values at once
+    console.log("Order Items Inserted:", receivedItems);
+
+    // Send a proper response without any circular reference
+    res.status(201).json({
+      message: "Items added successfully",
+    });
+  } catch (err) {
+    console.error("Error inserting new meal:", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 //EDIT ORDER ITEMS
 function editOrderItems(req, res) {
@@ -257,7 +377,7 @@ function deleteOrderItem(req, res) {
       //RESPONSE
       res.json({
         success: true,
-        message: "Item deleted successfully!"
+        message: "Item deleted successfully!",
       });
     }
   );
@@ -268,8 +388,10 @@ module.exports = {
   placeAnOrder,
   deleteAnOrder,
   updateAnOrder,
+  updateOrderItems,
   getOrderItems,
   selectOrderItems,
   editOrderItems,
   deleteOrderItem,
+  getPendingOrders,
 };
