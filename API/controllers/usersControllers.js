@@ -16,8 +16,6 @@ function getAllStaffs(req, res) {
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }else {
-        res.json(result.recordset);
       }
     }
   );

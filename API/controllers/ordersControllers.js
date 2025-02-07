@@ -8,64 +8,6 @@ const {
 //GET COMPLETED ORDERS
 function getOrders(req, res) {
   let pool = req.pool;
-  let { page, pageSize } = req.query;
-  let offset = (Number(page) - 1) * Number(pageSize);
-  pool.query(
-    `SELECT 
-    o.order_id, 
-    oi.order_items_id, 
-    oi.quantity,
-    mi.name AS meal_name, 
-    mi.price AS meal_price,
-    (oi.quantity * mi.price) AS total_cost
-FROM 
-    orders o
-JOIN 
-    order_items oi ON o.order_id = oi.order_id
-JOIN 
-    menu_items mi ON oi.meal_id = mi.meal_id
-WHERE 
-    o.order_status = 'served'
-ORDER BY 
-    o.order_id, oi.order_items_id  OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY;
-`,
-    (err, result) => {
-      if (err) {
-        res.status(500).json({
-          success: false,
-          message: "Internal server error.",
-        });
-        console.log("Error occured in query", err);
-      } else {
-        res.json(result.recordset);
-      }
-    }
-  );
-}
-
-//GET PENDING ORDERS
-function getPendingOrders(req, res) {
-  let pool = req.pool;
-  let { page, pageSize } = req.query;
-  let offset = (Number(page) - 1) * Number(pageSize);
-  pool.query(
-    `SELECT * 
-FROM orders 
-WHERE order_status = 'pending' 
-ORDER BY order_id  
-OFFSET ${offset} ROWS 
-FETCH NEXT ${pageSize} ROWS ONLY;
-`,
-    (err, result) => {
-      if (err) {
-        res.status(500).json({
-          success: false,
-          message: "Internal server error.",
-        });
-        console.log("Error occured in query", err);
-      } else {
-        res.json(result.recordset);
-      }
     }
   );
 }
@@ -215,14 +157,9 @@ ORDER BY
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-        return;
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No selected order items",
-        });
+
       } else {
-        res.json(result.recordset);
+        res.json({ orderItems: result.recordset });
       }
     }
   );
