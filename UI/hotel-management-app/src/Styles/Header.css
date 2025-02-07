@@ -1,0 +1,118 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body reset to avoid unwanted scrolling */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    overflow-x: hidden; 
+  }
+  
+  /* Full-width Header Styling */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2d2d2d;
+    color: white;
+    padding: 10px 20px;
+    width: 100%; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    z-index: 1000; 
+    box-sizing: border-box; 
+    overflow-x: hidden; 
+  }
+  
+  /* Logo */
+  .logo h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #ff6f61;
+    margin-right: 30px;
+  }
+  
+  /* Navigation Links */
+  .header-details {
+    display: flex;
+    justify-content: end;
+    gap: 25px;
+    align-items: center;
+    width: 70%; 
+  }
+  
+  .links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+  }
+  
+  .nav-link.active {
+    color: #ff6f61;
+    font-weight: bold;
+  }
+  
+  .nav-link:hover {
+    color: #f4a261;
+  }
+  
+  /* Cart and SignUp Section */
+  .cart-signup {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .cart {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .icon {
+    font-size: 24px;
+    color: white;
+  }
+  
+  .cart-number {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background-color: #ff6f61;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .signup-btn {
+    padding: 5px 15px;
+    background-color: #ff6f61;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+  
+  .signup-btn:hover {
+    background-color: #e55d52;
+  }
+  
