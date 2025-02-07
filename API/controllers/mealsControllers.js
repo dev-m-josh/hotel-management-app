@@ -12,6 +12,7 @@ function getAllMeals(req, res) {
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
+        return res.status(500).json({ message: "Error fetching meals" });
       } else {
         res.json({ meals: result.recordset });
       }

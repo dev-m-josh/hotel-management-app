@@ -12,6 +12,7 @@ body {
   justify-content: start;
   min-height: 100vh;
   background-color: #e6f7ff;
+  overflow: auto;
 }
 
 

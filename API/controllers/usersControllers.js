@@ -16,8 +16,6 @@ function getAllStaffs(req, res) {
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      } else {
-        res.json({ users: result.recordset });
       }
     }
   );
@@ -59,12 +57,11 @@ VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value
   );
 }
 
-//USER LOGIN
 async function userLogin(req, res) {
   let pool = req.pool;
   let userDetails = req.body;
 
-  //validation
+  // Validation
   const { error, value } = userLoginSchema.validate(userDetails, {
     abortEarly: false,
   });
@@ -73,44 +70,55 @@ async function userLogin(req, res) {
     return res.status(400).json({ errors: error.details });
   }
 
+  // Query to find the user in the database
   let requestedUser = await pool.query(
-    `select username, user_email, user_password, user_role from  users where user_email = '${value.user_email}'`
+    `SELECT user_id, username, user_email, user_role, user_password FROM users WHERE user_email = '${value.user_email}'`
   );
   let user = requestedUser.recordset[0];
 
-  //response
+  // If no user is found
   if (!user) {
-    res.json({
+    return res.status(404).json({
       success: false,
       message: "User not found!",
     });
-    return;
   }
 
-  let token = await jwt.sign({ user }, "youcanguessthisright");
-
+  // Compare passwords
   try {
-    let passwordComparisson = await bcrypt.compare(
+    let passwordComparison = await bcrypt.compare(
       userDetails.user_password,
       user.user_password
     );
 
-    if (passwordComparisson) {
-      res.json({
-        Message: "logged successfully",
+    // If the password matches
+    if (passwordComparison) {
+      // Remove the password from the user object before returning it
+      const { user_password, ...userWithoutPassword } = user; 
+
+      // Create a JWT token
+      let token = jwt.sign({ user_id: user.user_id }, "youcanguessthisright");
+
+      // Return the user details and token
+      return res.json({
+        message: "Logged in successfully",
         token,
+        user: userWithoutPassword, // Send user details without the password
       });
     } else {
-      res.json({
-        Message: "Wrong creditials!",
+      return res.status(401).json({
+        message: "Incorrect credentials!",
       });
     }
   } catch (error) {
-    res.status(500).json(error, {
-      Message: "Internal sever error",
+    console.error("Error during password comparison:", error);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
     });
   }
 }
+
 
 //EDIT USER
 async function editUser(req, res) {
