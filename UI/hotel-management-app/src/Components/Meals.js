@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Styles/Meals.css";
 
 function Meals() {
@@ -8,8 +9,14 @@ function Meals() {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10); // Number of items per page
     const [noMoreMeals, setNoMoreMeals] = useState(false);
+    const token = localStorage.getItem("authToken");
+    const navigate = useNavigate();
 
     useEffect(() => {
+        if (!token){
+            navigate("/login")
+        }
+
         const fetchMeals = async () => {
             try {
                 setLoading(true); // Set loading state to true while fetching

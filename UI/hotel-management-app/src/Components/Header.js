@@ -1,10 +1,26 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from "react-router-dom";
 import "../Styles/Header.css";
 
 function Header() {
+    const navigate = useNavigate();
+
     // Get the current path
     const currentPath = window.location.pathname;
+
+    // Check if the user is logged in
+    const loggedInUser = localStorage.getItem("user");
+
+    // Handle logout
+    const handleLogout = () => {
+        // Clear user data from localStorage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+
+        // Redirect to the login page
+        navigate("/login");
+    };
 
     return (
         <header className="header">
@@ -39,8 +55,16 @@ function Header() {
                 </div>
 
                 <div className="cart-signup">
-                    <a href="login" className="signup-btn">Log In</a>
-                    <a href="/sign-up" className="signup-btn">Sign Up</a>
+                    {loggedInUser ? (
+                        <button onClick={handleLogout} className="logout-btn">
+                            Log Out
+                        </button>
+                    ) : (
+                        <>
+                            <a href="/login" className="signup-btn">Log In</a>
+                            <a href="/sign-up" className="signup-btn">Sign Up</a>
+                        </>
+                    )}
                 </div>
             </nav>
         </header>
