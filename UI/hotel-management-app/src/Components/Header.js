@@ -39,8 +39,8 @@ function Header() {
                 </div>
 
                 <div className="cart-signup">
-                    <a href="/login" className="signup-btn">Log In</a>
-                    <a href="/signup" className="signup-btn">Sign Up</a>
+                    <a href="login" className="signup-btn">Log In</a>
+                    <a href="/sign-up" className="signup-btn">Sign Up</a>
                 </div>
             </nav>
         </header>
