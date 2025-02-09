@@ -1,0 +1,146 @@
+/* General Styles */
+.staffs {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.staff-table {
+    margin-top: 10px;
+    overflow-x: auto;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    color: #333;
+}
+
+th {
+    background-color: #3498db;
+    color: white;
+    font-weight: bold;
+}
+
+td {
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+tr:hover td {
+    background-color: #f1f1f1;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Button Styles */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+    box-shadow: none;
+}
+
+/* Fire Button */
+button.delete {
+    background-color: #e74c3c;
+    color: white;
+}
+
+button.delete:hover {
+    background-color: #c0392b;
+}
+
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button {
+    margin: 0 10px;
+    padding: 12px 25px;
+    font-size: 1em;
+    background-color: #3498db;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.pagination button:hover {
+    transform: translateY(-2px);
+}
+
+.pagination span {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    align-self: center;
+}
+
+.pagination button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Error and Loading Styles */
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin: 20px 0;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 1.2em;
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* No Data Available */
+.no-data {
+    text-align: center;
+    font-size: 1.2em;
+    margin-top: 50px;
+    color: #888;
+}
