@@ -1,0 +1,157 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    line-height: 1.5;
+    background-color: #f4f4f4;
+}
+
+/* Header styling */
+.header {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo styling */
+.logo h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: 2px;
+}
+
+/* Navigation styling */
+.header-details {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    margin-right: 20px;
+    text-decoration: none;
+    font-size: 1.3rem;
+    color: #555;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link.active {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.nav-link:hover{
+    color: #007bff;
+}
+
+.cart-signup {
+    display: flex;
+    align-items: center;
+}
+
+.links{
+    display: flex;
+    align-items: center;
+}
+
+.signup-btn {
+    text-decoration: none;
+    margin-left: 20px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.signup-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Cart Icon and Number */
+.cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    font-size: 1.8rem;
+    color: #333;
+    transition: color 0.3s ease-in-out;
+}
+
+.cart-number {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ff0000;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    border-radius: 50%;
+    padding: 3px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .header {
+        padding: 15px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo h1 {
+        font-size: 1.6rem;
+    }
+
+    .header-details {
+        width: 100%;
+        margin-top: 10px;
+        justify-content: space-between;
+    }
+
+    .cart-signup {
+        margin-top: 10px;
+    }
+
+    .signup-btn {
+        margin-left: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size: 1.4rem;
+    }
+
+    .nav-link {
+        font-size: 0.9rem;
+        margin-right: 10px;
+    }
+
+    .cart-number {
+        font-size: 0.8rem;
+        padding: 3px 6px;
+    }
+}
