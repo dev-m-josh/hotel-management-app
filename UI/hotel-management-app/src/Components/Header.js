@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import "../Styles/Header.css";
+import { NavLink } from "react-router-dom"; // Import NavLink from react-router-dom
+
 
 function Header() {
   return (
@@ -20,6 +22,7 @@ function Header() {
           <a href="/staffs" className="nav-link">
             Staffs
           </a>
+
           <div className="cart">
             <FontAwesomeIcon className="icon" icon={faShoppingBasket} />
             <div className="cart-number">0</div>

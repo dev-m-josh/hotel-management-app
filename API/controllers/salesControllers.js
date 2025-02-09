@@ -20,17 +20,12 @@ JOIN
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No sales made yet",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ sales: result.recordset });
       }
     }
   );
-};
+}
 
 //sales for today
 function salesForToday(req, res) {
@@ -53,13 +48,8 @@ WHERE
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No sales made today",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ sales: result.recordset });
       }
     }
   );
@@ -88,17 +78,12 @@ WHERE
           message: "Internal server error.",
         });
         console.log("Error occured in query", err);
-      }
-      if (result.rowsAffected[0] === 0) {
-        res.json({
-          message: "No sales made during this period",
-        });
       } else {
-        res.json(result.recordset);
+        res.json({ sales: result.recordset });
       }
     }
   );
-};
+}
 
 module.exports = {
   salesForEachOrder,

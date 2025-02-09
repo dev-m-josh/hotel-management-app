@@ -12,9 +12,8 @@ function getAllMeals(req, res) {
     (err, result) => {
       if (err) {
         console.log("error occured in query", err);
-        return res.status(500).json({ message: "Error fetching meals" });
       } else {
-        res.json(result.recordset);
+        res.json({ meals: result.recordset });
       }
     }
   );
@@ -36,8 +35,8 @@ function deleteMeal(req, res) {
         console.log("Error occured in query", err);
       }
 
-      //CHECK IF REQUESTED USER IS AVAILABLE
-      if (result.rowsAffected[0] === 0) {
+      //CHECK IF REQUESTED MEAL IS AVAILABLE
+      if (!result.rowsAffected) {
         res.json({
           success: false,
           message: "Meal not found!",
@@ -79,7 +78,7 @@ function addNewMeal(req, res) {
       } else {
         res.status(201).json({
           message: "Meal added successfully",
-          newMeal
+          newMeal,
         });
       }
     }
@@ -95,7 +94,6 @@ function editMeal(req, res) {
     `UPDATE menu_items
       SET name = '${mealEdits.name}', category = '${mealEdits.category}', description = '${mealEdits.description}', price = '${mealEdits.price}' WHERE meal_id = '${requestedMealId}'`,
     (err, result) => {
-      console.log(result)
       if (err) {
         res.status(500).json({
           success: false,
@@ -104,7 +102,7 @@ function editMeal(req, res) {
         console.log("Error occured in query", err);
       }
       // Check if any rows were affected
-      if (result.rowsAffected[0] === 0) {
+      if (!result.rowsAffected) {
         return res.status(404).json({
           success: false,
           message: `Meal with ID ${userToEditId} not found.`,
@@ -146,7 +144,7 @@ ORDER BY
       if (err) {
         console.log("error occured in query", err);
       } else {
-        res.json(result.recordset);
+        res.json({trendingMeals:result.recordset});
       }
     }
   );
@@ -183,7 +181,7 @@ ORDER BY
       if (err) {
         console.log("error occured in query", err);
       } else {
-        res.json(result.recordset);
+        res.json({ availableServings: result.recordset });
       }
     }
   );
@@ -218,7 +216,7 @@ function addAvailableServings(req, res) {
         res.json({
           success: true,
           message: "available_servings set successfully",
-          servings
+          servings,
         });
       }
     }
@@ -241,8 +239,8 @@ function deleteAvailableServings(req, res) {
         console.log("Error occured in query", err);
       }
 
-      //CHECK IF REQUESTED USER IS AVAILABLE
-      if (result.rowsAffected[0] === 0) {
+      //CHECK IF REQUESTED MEAL IS AVAILABLE
+      if (!result.rowsAffected) {
         res.json({
           success: false,
           message: "No available servings",
