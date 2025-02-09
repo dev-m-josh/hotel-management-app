@@ -6,7 +6,7 @@ import Meals from "./Components/Meals";
 // import Staffs from "./Components/Staffs";
 // import Login from "./Components/Login";
 // import SignUp from "./Components/SignUp";
-// import Orders from "./Components/Orders";
+import Orders from "./Components/Orders";
 // import CreateOrder from "./Components/CreateOrder";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
         <div className="page-content">
           <Routes>
           <Route path="/" element={<Meals />} />
-          {/*  <Route path="/orders" element={<Orders />} />*/}
+          <Route path="/orders" element={<Orders />} />
           {/*  <Route path="/staffs" element={<Staffs />} />*/}
           {/*  <Route path="/login" element={<Login />} />*/}
           {/*  <Route path="/sign-up" element={<SignUp />} />*/}
