@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { newUserSchema, userLoginSchema } = require("../validators/validators");
+const { newUserSchema, userLoginSchema,editUserSchema } = require("../validators/validators");
 
 //get all users
 function getAllStaffs(req, res) {
@@ -121,44 +121,62 @@ async function userLogin(req, res) {
   }
 }
 
-
 //EDIT USER
 async function editUser(req, res) {
   let pool = req.pool;
   let userToEditId = req.params.userId;
   let userEdits = req.body;
 
-  let password_hash = await bcrypt.hash(userEdits.user_password, 5);
+  // Validate the input
+  const { error } = editUserSchema.validate(userEdits);
+  if (error) {
+    // If validation fails
+    return res.status(400).json({
+      success: false,
+      message: error.details[0].message
+    });
+  }
 
-  pool.query(
-    `
-      UPDATE users
-      SET username = '${userEdits.username}', user_email = '${userEdits.user_email}', user_password = '${password_hash}', user_role = '${userEdits.user_role}' WHERE user_id = '${userToEditId}'`,
-    (err, result) => {
-      if (err) {
-        res.status(500).json({
-          success: false,
-          message: "Internal server error.",
-        });
-        console.log("Error occured in query", err);
-      }
-      // Check if any rows were affected
-      if (result.rowsAffected[0] === 0) {
-        return res.status(404).json({
-          success: false,
-          message: `User with ID ${userToEditId} not found.`,
-        });
-      } else {
-        res.json({
-          success: true,
-          message: "Edit was successfully done.",
-          rowsAffected: result.rowsAffected,
-          userDetails: userEdits,
-        });
-      }
+  // query with parameterized inputs
+  const query = `
+    UPDATE users
+    SET user_role = $1
+    WHERE user_id = $2
+  `;
+  const values = [userEdits.user_role, userToEditId];
+
+  try {
+    // Execute the query with parameterized values
+    const result = await pool.query(query, values);
+    console.log(result)
+
+    // Check if any rows were affected
+    if (result.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `User with ID ${userToEditId} not found.`
+      });
     }
-  );
+
+    // Return a success response
+    res.json({
+      success: true,
+      message: 'User role was successfully updated.',
+      userDetails: {
+        user_id: userToEditId,
+        user_role: userEdits.user_role
+      }
+    });
+  } catch (err) {
+    // Handle any errors that occur during the query execution
+    console.error('Error occurred in query', err);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.'
+    });
+  }
 }
+
 
 //DELETE A USER
 function deleteUser(req, res) {

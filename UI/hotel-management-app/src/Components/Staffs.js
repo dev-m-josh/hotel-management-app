@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Styles/Staffs.css";
 
 function Staffs() {
@@ -8,8 +9,13 @@ function Staffs() {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
     const [noMoreStaffs, setNoMoreStaffs] = useState(false);
+    const [editingStaffId, setEditingStaffId] = useState(null); // Track the staff being edited
+    const [newRole, setNewRole] = useState(""); // Store the new role
+    const [isEditing, setIsEditing] = useState(false); // Editing state
 
+    const navigate = useNavigate();
     const token = localStorage.getItem("authToken");
+    const loggedInUser = localStorage.getItem("user");
 
     const initialRender = useRef(true);
 
@@ -21,9 +27,7 @@ function Staffs() {
 
         const fetchStaffs = async () => {
             if (!token) {
-                setError("No token found");
-                setLoading(false);
-                return;
+                navigate("/login");
             }
 
             try {
@@ -67,6 +71,11 @@ function Staffs() {
     }, [page, pageSize, token]);
 
     const handleDelete = async (staffId) => {
+        if (loggedInUser.role !== "admin") {
+            alert("You can't delete this user!");
+            return;
+        }
+
         const confirmDelete = window.confirm("Are you sure you want to fire this staff?");
         if (!confirmDelete) return;
 
@@ -89,6 +98,50 @@ function Staffs() {
             alert(data.message);
         } catch (err) {
             console.error("Error deleting staff:", err);
+            setError(err.message);
+        }
+    };
+
+    const handleEditUser = (staffId, currentRole) => {
+        setEditingStaffId(staffId); // Set which staff is being edited
+        setNewRole(currentRole); // Set the current role as the default value
+        setIsEditing(true); // Enable editing mode
+    };
+
+    console.log(editingStaffId)
+
+    const handleUpdateRole = async () => {
+        // if (loggedInUser.role !== "admin") {
+        //     alert("You can't update this user!");
+        //     return;
+        // }
+
+        try {
+            const response = await fetch(`http://localhost:3500/users/${editingStaffId}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ user_role: newRole }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to update user role");
+            }
+
+            setStaffs((prevStaffs) =>
+                prevStaffs.map((staff) =>
+                    staff.user_id === editingStaffId ? { ...staff, user_role: newRole } : staff
+                )
+            );
+
+            alert("User role updated successfully!");
+            setIsEditing(false); // Exit editing mode
+        } catch (err) {
+            console.error("Error updating role:", err);
             setError(err.message);
         }
     };
@@ -139,12 +192,36 @@ function Staffs() {
                                 >
                                     Fire
                                 </button>
+                                <button
+                                    className="edit-btn"
+                                    onClick={() =>
+                                        handleEditUser(staff.user_id, staff.user_role)
+                                    }
+                                >
+                                    Edit
+                                </button>
                             </td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
             </div>
+
+            {isEditing && (
+                <div className="edit-form">
+                    <h3>Edit User Role</h3>
+                    <select
+                        value={newRole}
+                        onChange={(e) => setNewRole(e.target.value)}
+                    >
+                        <option value="admin">Admin</option>
+                        <option value="waiter">Waiter</option>
+                        <option value="manager">Manager</option>
+                    </select>
+                    <button onClick={handleUpdateRole}>Update Role</button>
+                    <button onClick={() => setIsEditing(false)}>Cancel</button>
+                </div>
+            )}
 
             <div className="pagination">
                 <button

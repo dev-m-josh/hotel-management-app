@@ -38,9 +38,10 @@ th, td {
 }
 
 th {
-    background-color: #3498db;
-    color: white;
+    background-color: #f8f8f8;
+    color: black;
     font-weight: bold;
+    border-bottom: 3px solid #ddd;
 }
 
 td {
@@ -49,7 +50,7 @@ td {
 }
 
 tr:hover td {
-    background-color: #f1f1f1;
+    background-color: snow;
 }
 
 tr:last-child td {
@@ -79,12 +80,21 @@ button:disabled {
 button.delete {
     background-color: #e74c3c;
     color: white;
+    margin-right: 10px;
+    padding: 10px 15px;
 }
 
 button.delete:hover {
     background-color: #c0392b;
 }
 
+.edit-btn{
+    background-color: #007bff;
+}
+
+.edit-btn:hover{
+    background-color: #3498db;
+}
 /* Pagination Styles */
 .pagination {
     display: flex;

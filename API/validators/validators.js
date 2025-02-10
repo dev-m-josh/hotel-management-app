@@ -15,6 +15,11 @@ const newUserSchema = joi.object({
   user_role: joi.string().required(),
 });
 
+//USER EDIT SCHEMA
+const editUserSchema = joi.object({
+  user_role: joi.string().valid('admin', 'waiter', 'manager').required()
+})
+
 //USER LOGIN SCHEMA
 const userLoginSchema = joi.object({
   user_email: joi.string().email().required(),
@@ -67,4 +72,5 @@ module.exports = {
   orderSchema,
   orderEditsSchema,
   orderStatusSchema,
+  editUserSchema
 };

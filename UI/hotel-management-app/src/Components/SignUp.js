@@ -48,7 +48,6 @@ export default function SignUp() {
         };
 
         try {
-            // Send data to the backend server
             const response = await axios.post(
                 "http://localhost:3500/users",
                 userData

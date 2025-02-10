@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import CreateOrder from "./CreateOrder";
 import "../Styles/Orders.css";
 
@@ -12,14 +13,15 @@ export default function Orders() {
     const [showCreateOrder, setShowCreateOrder] = useState(false); // Control CreateOrder visibility
     const token = localStorage.getItem("authToken"); // Authorization token
     const loggedInUser = localStorage.getItem("user"); // LoggedIn user
+    const navigate = useNavigate();
 
     // Fetch orders when the component mounts or when page changes
     const fetchOrders = async () => {
         if (!token) {
-            setError("No token found!");
-            setLoading(false);
-            return;
+            navigate("/login");
         }
+
+        setOrders([]);
 
         try {
             const response = await fetch(
@@ -68,10 +70,6 @@ export default function Orders() {
     };
 
     const handleDelete = async (orderId) => {
-        if (!token) {
-            setError("No token found!");
-            return;
-        }
 
         if (loggedInUser.role !== "admin") {
             alert("You can't delete this order!");
