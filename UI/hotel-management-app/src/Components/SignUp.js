@@ -8,6 +8,7 @@ export default function SignUp() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState(""); // state for confirm password
     const [role, setRole] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
@@ -28,6 +29,17 @@ export default function SignUp() {
             return;
         }
 
+        // Check if password and confirm password match
+        if (password !== confirmPassword) {
+            setErrorMessage("Passwords do not match");
+            return;
+        }
+
+        if (!role) {
+            setErrorMessage("Please select a role");
+            return;
+        }
+
         const userData = {
             username,
             user_email: email,
@@ -42,6 +54,10 @@ export default function SignUp() {
                 userData
             );
 
+            const data = response.data
+
+            localStorage.setItem("token", JSON.stringify(data.token));
+
             // Store user data in localStorage
             const loggedInUser = {
                 user_id: response.data.addedUser.user_id,
@@ -50,12 +66,8 @@ export default function SignUp() {
                 role: response.data.addedUser.user_role,
             };
 
-            console.log(loggedInUser)
-
             localStorage.setItem("user", JSON.stringify(loggedInUser));
 
-            // If the request is successful
-            console.log("User Data Submitted: ", response.data);
             alert("User signed up successfully!");
             // Navigate to the homepage
             navigate("/");
@@ -102,6 +114,18 @@ export default function SignUp() {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {/* Confirm Password Field */}
+                <div>
+                    <label htmlFor="confirmPassword">Confirm Password:</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />
                 </div>
