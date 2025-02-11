@@ -9,7 +9,6 @@ export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState(""); // state for confirm password
-    const [role, setRole] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
 
@@ -35,16 +34,11 @@ export default function SignUp() {
             return;
         }
 
-        if (!role) {
-            setErrorMessage("Please select a role");
-            return;
-        }
-
         const userData = {
             username,
             user_email: email,
             user_password: password,
-            user_role: role,
+            user_role: "waiter",
         };
 
         try {
@@ -129,21 +123,8 @@ export default function SignUp() {
                     />
                 </div>
 
-                {/* Role Field */}
-                <div>
-                    <label htmlFor="role">Role:</label>
-                    <select
-                        id="role"
-                        value={role}
-                        onChange={(e) => setRole(e.target.value)}
-                        required
-                    >
-                        <option value="">Select Role</option>
-                        <option value="waiter">Waiter</option>
-                        <option value="admin">Admin</option>
-                        <option value="manager">Manager</option>
-                    </select>
-                </div>
+                {/* Display error message if any */}
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
 
                 {/* Submit Button */}
                 <div>
@@ -151,8 +132,6 @@ export default function SignUp() {
                 </div>
             </form>
 
-            {/* Display error message if any */}
-            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
         </div>
     );
 }
