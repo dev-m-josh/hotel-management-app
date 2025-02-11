@@ -15,10 +15,17 @@ const newUserSchema = joi.object({
   user_role: joi.string().required(),
 });
 
+//USER ROLE UPDATE SCHEMA
+const editUserRoleSchema = joi.object({
+  user_role: joi.string()
+      .valid('admin', 'waiter', 'manager')
+      .required()
+});
+
 //USER EDIT SCHEMA
-const editUserSchema = joi.object({
-  user_role: joi.string().valid('admin', 'waiter', 'manager').required()
-})
+const editUsernameSchema = joi.object({
+  username: joi.string().min(3).max(255).required()
+});
 
 //USER LOGIN SCHEMA
 const userLoginSchema = joi.object({
@@ -72,5 +79,6 @@ module.exports = {
   orderSchema,
   orderEditsSchema,
   orderStatusSchema,
-  editUserSchema
+  editUserRoleSchema,
+  editUsernameSchema
 };

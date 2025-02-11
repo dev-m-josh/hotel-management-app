@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { newUserSchema, userLoginSchema,editUserSchema } = require("../validators/validators");
+const { newUserSchema, userLoginSchema,editUsernameSchema } = require("../validators/validators");
 
 //get all users
 function getAllStaffs(req, res) {
@@ -121,61 +121,54 @@ async function userLogin(req, res) {
   }
 }
 
-//EDIT USER
-async function editUser(req, res) {
+//EDIT USERNAME
+function editUserName(req, res) {
   let pool = req.pool;
-  let userToEditId = req.params.userId;
+  let requestedUserId = req.params.userId;
   let userEdits = req.body;
 
-  // Validate the input
-  const { error } = editUserSchema.validate(userEdits);
+  console.log(userEdits)
+  // Validation
+  const { error, value } = editUsernameSchema.validate(userEdits, {
+    abortEarly: false,
+  });
   if (error) {
-    // If validation fails
-    return res.status(400).json({
-      success: false,
-      message: error.details[0].message
-    });
+    console.log(error);
+    return res.status(400).json({ errors: error.details });
   }
 
-  // query with parameterized inputs
-  const query = `
+  pool.query(`
     UPDATE users
-    SET user_role = $1
-    WHERE user_id = $2
-  `;
-  const values = [userEdits.user_role, userToEditId];
-
-  try {
-    // Execute the query with parameterized values
-    const result = await pool.query(query, values);
+    SET username = '${userEdits.username}'
+    WHERE user_id = '${requestedUserId}'`,(err,result) =>{
     console.log(result)
-
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Internal server error.",
+      });
+      console.log("Error occured in query", err);
+      return
+    }
     // Check if any rows were affected
-    if (result.rowCount === 0) {
+    if (result.rowsAffected[0] === 0) {
       return res.status(404).json({
         success: false,
-        message: `User with ID ${userToEditId} not found.`
+        message: `User with ID ${requestedUserId} not found.`,
+      });
+    } else {
+      res.json({
+        success: true,
+        message: "Edit was successfully done.",
+        rowsAffected: result.rowsAffected,
+        newUserDetails: userEdits,
       });
     }
-
-    // Return a success response
-    res.json({
-      success: true,
-      message: 'User role was successfully updated.',
-      userDetails: {
-        user_id: userToEditId,
-        user_role: userEdits.user_role
-      }
-    });
-  } catch (err) {
-    // Handle any errors that occur during the query execution
-    console.error('Error occurred in query', err);
-    res.status(500).json({
-      success: false,
-      message: 'Internal server error.'
-    });
-  }
+    }
+  )
 }
+
+// EDIT USER ROLE
 
 
 //DELETE A USER
@@ -196,7 +189,7 @@ function deleteUser(req, res) {
 
       //CHECK IF REQUESTED USER IS AVAILABLE
       if (result.rowsAffected[0] === 0) {
-        res.json({
+        res.status(400).json({
           success: false,
           message: "User not found!",
         });
@@ -213,4 +206,4 @@ function deleteUser(req, res) {
   );
 }
 
-module.exports = { getAllStaffs, addNewUser, userLogin, editUser, deleteUser };
+module.exports = { getAllStaffs, addNewUser, userLogin, editUserName, deleteUser };

@@ -107,7 +107,7 @@ function editMeal(req, res) {
       if (result.rowsAffected[0] === 0) {
         return res.status(404).json({
           success: false,
-          message: `Meal with ID ${userToEditId} not found.`,
+          message: `Meal with ID ${requestedMealId} not found.`,
         });
       } else {
         res.json({

@@ -9,8 +9,8 @@ function Staffs() {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(10);
     const [noMoreStaffs, setNoMoreStaffs] = useState(false);
-    const [editingStaffId, setEditingStaffId] = useState(null); // Track the staff being edited
-    const [newRole, setNewRole] = useState(""); // Store the new role
+    const [staffId, setStaffId] = useState(null); // Track the staff being edited
+    const [newName, setNewName] = useState(""); // Store the new name
     const [isEditing, setIsEditing] = useState(false); // Editing state
 
     const navigate = useNavigate();
@@ -68,7 +68,7 @@ function Staffs() {
         };
 
         fetchStaffs();
-    }, [page, pageSize, token]);
+    }, [page, pageSize, token, navigate]);
 
     const handleDelete = async (staffId) => {
         if (loggedInUser.role !== "admin") {
@@ -102,46 +102,52 @@ function Staffs() {
         }
     };
 
-    const handleEditUser = (staffId, currentRole) => {
-        setEditingStaffId(staffId); // Set which staff is being edited
-        setNewRole(currentRole); // Set the current role as the default value
-        setIsEditing(true); // Enable editing mode
+    const handleEditUser = (staffId, currentUsername) => {
+        setStaffId(staffId);
+        setNewName(currentUsername); // Set the current username as the default value
+        setIsEditing(true);
     };
 
-    console.log(editingStaffId)
+    const handleUsernameChange = (e) => {
+        setNewName(e.target.value); // Update the new username
+    };
 
-    const handleUpdateRole = async () => {
-        // if (loggedInUser.role !== "admin") {
-        //     alert("You can't update this user!");
-        //     return;
-        // }
+    console.log(staffId)
+
+    const handleUpdateUsername = async () => {
+        if (!newName.trim()) {
+            alert("Username cannot be empty.");
+            return;
+        }
 
         try {
-            const response = await fetch(`http://localhost:3500/users/${editingStaffId}`, {
+            const response = await fetch(`http://localhost:3500/users/${staffId}`, {
                 method: "PUT",
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ user_role: newRole }),
+                body: JSON.stringify({ username: newName }),
             });
 
             const data = await response.json();
+            console.log(data);
 
             if (!response.ok) {
-                throw new Error(data.message || "Failed to update user role");
+                throw new Error(data.message || "Failed to update username");
             }
 
+            // Update the staff list with the new username
             setStaffs((prevStaffs) =>
                 prevStaffs.map((staff) =>
-                    staff.user_id === editingStaffId ? { ...staff, user_role: newRole } : staff
+                    staff.user_id === staffId ? { ...staff, username: newName } : staff
                 )
             );
 
-            alert("User role updated successfully!");
-            setIsEditing(false); // Exit editing mode
+            alert(data.message); // Success message
+            setIsEditing(false); // Close the editing form
         } catch (err) {
-            console.error("Error updating role:", err);
+            console.error("Error updating username:", err);
             setError(err.message);
         }
     };
@@ -195,7 +201,7 @@ function Staffs() {
                                 <button
                                     className="edit-btn"
                                     onClick={() =>
-                                        handleEditUser(staff.user_id, staff.user_role)
+                                        handleEditUser(staff.user_id, staff.username)
                                     }
                                 >
                                     Edit
@@ -209,16 +215,13 @@ function Staffs() {
 
             {isEditing && (
                 <div className="edit-form">
-                    <h3>Edit User Role</h3>
-                    <select
-                        value={newRole}
-                        onChange={(e) => setNewRole(e.target.value)}
-                    >
-                        <option value="admin">Admin</option>
-                        <option value="waiter">Waiter</option>
-                        <option value="manager">Manager</option>
-                    </select>
-                    <button onClick={handleUpdateRole}>Update Role</button>
+                    <h3>Edit User Name</h3>
+                    <input
+                        type="text"
+                        value={newName}
+                        onChange={handleUsernameChange}
+                    />
+                    <button onClick={handleUpdateUsername}>Update Username</button>
                     <button onClick={() => setIsEditing(false)}>Cancel</button>
                 </div>
             )}
