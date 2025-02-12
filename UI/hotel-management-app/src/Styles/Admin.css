@@ -1,0 +1,41 @@
+
+/* Style the overall container */
+.admin {
+    font-family: Arial, sans-serif;
+    align-self: flex-start;
+}
+
+/* Style the heading */
+h1 {
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* Style the unordered list */
+.list {
+    margin-left: 20px;
+}
+
+/* Style each list item */
+li {
+    margin: 5px 0;
+}
+
+/* Style the buttons */
+button {
+    background-color: transparent;
+    color: black;
+    padding: 5px 0;
+    font-size: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Change button color on hover */
+button:hover {
+    background-color: transparent;
+    text-decoration: underline;
+}

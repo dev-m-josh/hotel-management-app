@@ -48,6 +48,11 @@ function Header() {
                     >
                         Staffs
                     </a>
+                    <a href={"/admin"}
+                        className={`nav-link ${currentPath === '/admin' ? 'active' : ''}`}
+                    >
+                        Admin
+                    </a>
                     <div className="cart">
                         <FontAwesomeIcon className='icon' icon={faShoppingBasket} />
                         <div className="cart-number">0</div>
