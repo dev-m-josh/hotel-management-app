@@ -7,7 +7,7 @@ function Meals() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10); // Number of items per page
+    const [pageSize] = useState(5); // Number of items per page
     const [noMoreMeals, setNoMoreMeals] = useState(false);
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
@@ -95,7 +95,7 @@ function Meals() {
                         <td>{meal.name}</td>
                         <td>{meal.category}</td>
                         <td>{meal.description}</td>
-                        <td>${meal.price}</td>
+                        <td>Ksh {meal.price}</td>
                     </tr>
                 ))}
                 </tbody>

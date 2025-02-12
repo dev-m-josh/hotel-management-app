@@ -2,7 +2,7 @@
 /* Style the overall container */
 .admin {
     font-family: Arial, sans-serif;
-    align-self: flex-start;
+    align-self: center;
 }
 
 /* Style the heading */
@@ -38,4 +38,16 @@ button {
 button:hover {
     background-color: transparent;
     text-decoration: underline;
+}
+
+.submit{
+    background-color: #007bff;
+    transition: background-color 0.3s ease-in-out;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.submit:hover{
+    text-decoration: none;
+    background-color: #3498db;
 }
