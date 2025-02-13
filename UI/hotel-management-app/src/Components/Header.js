@@ -2,22 +2,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import "../Styles/Header.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 function Header() {
     const user = JSON.parse(localStorage.getItem("user"));
     const [isAdmin, setIsAdmin] = useState(false)
-    console.log(user)
     const navigate = useNavigate();
 
     // Get the current path
     const currentPath = window.location.pathname;
 
     // Get the user's role
-    if(user && user.role === 'admin'){
-        setIsAdmin(true);
-        return
-    }
+    useEffect(() => {
+        if(user && user.role === 'admin'){
+            setIsAdmin(true);
+        }
+    }, [user]);
+
 
     // Get the cart items from localStorage
     const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
