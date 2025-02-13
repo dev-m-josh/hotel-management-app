@@ -36,7 +36,7 @@ function Admin() {
             </div>
 
             {/* Show the AddMeal form if isAddingMeal is true */}
-            {isAddingMeal && <AddMeal />}
+            {isAddingMeal && <AddMeal onBack={toggleAddMealForm} />}
         </div>
     );
 }

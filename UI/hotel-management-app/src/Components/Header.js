@@ -2,15 +2,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingBasket } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
 import "../Styles/Header.css";
+import {useState} from "react";
 
 function Header() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const [isAdmin, setIsAdmin] = useState(false)
+    console.log(user)
     const navigate = useNavigate();
 
     // Get the current path
     const currentPath = window.location.pathname;
 
-    // Check if the user is logged in
-    const loggedInUser = localStorage.getItem("user");
+    // Get the user's role
+    if(user && user.role === 'admin'){
+        setIsAdmin(true);
+        return
+    }
+
+    // Get the cart items from localStorage
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const cartCount = cartItems.length;
 
     // Handle logout
     const handleLogout = () => {
@@ -48,19 +59,25 @@ function Header() {
                     >
                         Staffs
                     </a>
-                    <a href={"/admin"}
-                        className={`nav-link ${currentPath === '/admin' ? 'active' : ''}`}
-                    >
-                        Admin
-                    </a>
+
+                    {/* Conditionally render Admin link */}
+                    {isAdmin && (
+                        <a
+                            href="/admin"
+                            className={`nav-link ${currentPath === '/admin' ? 'active' : ''}`}
+                        >
+                            Admin
+                        </a>
+                    )}
+
                     <div className="cart">
                         <FontAwesomeIcon className='icon' icon={faShoppingBasket} />
-                        <div className="cart-number">0</div>
+                        <div className="cart-number">{cartCount}</div>
                     </div>
                 </div>
 
                 <div className="cart-signup">
-                    {loggedInUser ? (
+                    {user ? (
                         <button onClick={handleLogout} className="logout-btn">
                             Log Out
                         </button>
