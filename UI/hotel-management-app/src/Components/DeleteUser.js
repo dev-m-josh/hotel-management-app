@@ -2,20 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Staffs.css";
 
-function Staffs() {
+function DeleteUser({onBack}) {
     const [staffs, setStaffs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [page, setPage] = useState(1);
-    const [pageSize] = useState(10);
+    const [pageSize] = useState(5);
     const [noMoreStaffs, setNoMoreStaffs] = useState(false);
-    const [staffId, setStaffId] = useState(null); // Track the staff being edited
-    const [newName, setNewName] = useState(""); // Store the new name
-    const [isEditing, setIsEditing] = useState(false); // Editing state
 
     const navigate = useNavigate();
     const token = localStorage.getItem("authToken");
-    const loggedInUser = localStorage.getItem("user");
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
     const initialRender = useRef(true);
 
@@ -102,53 +99,6 @@ function Staffs() {
         }
     };
 
-    const handleEditUser = (staffId, currentUsername) => {
-        setStaffId(staffId);
-        setNewName(currentUsername); // Set the current username as the default value
-        setIsEditing(true);
-    };
-
-    const handleUsernameChange = (e) => {
-        setNewName(e.target.value); // Update the new username
-    };
-
-    const handleUpdateUsername = async () => {
-        if (!newName.trim()) {
-            alert("Username cannot be empty.");
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:3500/users/${staffId}`, {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ username: newName }),
-            });
-
-            const data = await response.json();
-            console.log(data);
-
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to update username");
-            }
-
-            // Update the staff list with the new username
-            setStaffs((prevStaffs) =>
-                prevStaffs.map((staff) =>
-                    staff.user_id === staffId ? { ...staff, username: newName } : staff
-                )
-            );
-
-            alert(data.message); // Success message
-            setIsEditing(false); // Close the editing form
-        } catch (err) {
-            console.error("Error updating username:", err);
-            setError(err.message);
-        }
-    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -179,7 +129,6 @@ function Staffs() {
                     <tr>
                         <th>Username</th>
                         <th>Position</th>
-                        <th>Email</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -188,21 +137,12 @@ function Staffs() {
                         <tr key={staff.user_id}>
                             <td>{staff.username}</td>
                             <td>{staff.user_role}</td>
-                            <td>{staff.user_email}</td>
                             <td>
                                 <button
                                     className="delete"
                                     onClick={() => handleDelete(staff.user_id)}
                                 >
                                     Fire
-                                </button>
-                                <button
-                                    className="edit-btn"
-                                    onClick={() =>
-                                        handleEditUser(staff.user_id, staff.username)
-                                    }
-                                >
-                                    Edit
                                 </button>
                             </td>
                         </tr>
@@ -211,18 +151,7 @@ function Staffs() {
                 </table>
             </div>
 
-            {isEditing && (
-                <div className="edit-form">
-                    <h3>Edit User Name</h3>
-                    <input
-                        type="text"
-                        value={newName}
-                        onChange={handleUsernameChange}
-                    />
-                    <button onClick={handleUpdateUsername}>Update Username</button>
-                    <button onClick={() => setIsEditing(false)}>Cancel</button>
-                </div>
-            )}
+            <button onClick={onBack}>Back</button>
 
             <div className="pagination">
                 <button
@@ -243,4 +172,4 @@ function Staffs() {
     );
 }
 
-export default Staffs;
+export default DeleteUser;
