@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
+import "../Styles/AddMeal.css";
 
 export default function AddMeal({onBack}) {
     const token = localStorage.getItem("authToken"); // Authorization token
@@ -33,8 +34,8 @@ export default function AddMeal({onBack}) {
                     }
                 }
             );
-            alert(response.data.message)
-            onBack()
+            alert(response.data.message);
+            onBack();
         } catch (err) {
             setError('Failed to add meal');
             console.error('Error adding meal:', err);
@@ -42,14 +43,15 @@ export default function AddMeal({onBack}) {
     };
 
     return (
-        <div>
-            <h2>Add New Meal</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Name:</label>
+        <div className="add-meal-container">
+            <h2 className="add-meal-heading">Add New Meal</h2>
+            {error && <p className="error-message">{error}</p>}
+            <form className="add-meal-form" onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label className="form-label">Name:</label>
                     <input
                         type="text"
+                        className="form-input"
                         placeholder={"Meal name..."}
                         name="name"
                         value={meal.name.trimStart()}
@@ -57,10 +59,11 @@ export default function AddMeal({onBack}) {
                         required
                     />
                 </div>
-                <div>
-                    <label>Category:</label>
+                <div className="form-group">
+                    <label className="form-label">Category:</label>
                     <input
                         type="text"
+                        className="form-input"
                         placeholder={"Meal category..."}
                         name="category"
                         value={meal.category.trimStart()}
@@ -68,9 +71,10 @@ export default function AddMeal({onBack}) {
                         required
                     />
                 </div>
-                <div>
-                    <label>Description:</label>
+                <div className="form-group">
+                    <label className="form-label">Description:</label>
                     <textarea
+                        className="form-input"
                         name="description"
                         placeholder={"Type the meal description here"}
                         value={meal.description.trimStart()}
@@ -78,10 +82,11 @@ export default function AddMeal({onBack}) {
                         required
                     />
                 </div>
-                <div>
-                    <label>Price:</label>
+                <div className="form-group">
+                    <label className="form-label">Price:</label>
                     <input
                         type="number"
+                        className="form-input"
                         placeholder={"Price..."}
                         name="price"
                         min={1}
@@ -90,9 +95,9 @@ export default function AddMeal({onBack}) {
                         required
                     />
                 </div>
-                <div>
-                    <button className={"cancel"} onClick={onBack} >Back</button>
-                    <button className={"submit"} type="submit">Add Meal</button>
+                <div className="form-buttons">
+                    <button className="cancel-button" type="button" onClick={onBack}>Back</button>
+                    <button className="submit-button" type="submit">Add Meal</button>
                 </div>
             </form>
         </div>

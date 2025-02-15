@@ -122,7 +122,9 @@ function DeleteUser({onBack}) {
 
     return (
         <div className="staffs">
-            <h1>Staff List</h1>
+            <div className={"staffs-header"}>
+                <h1>Staff List</h1>
+            </div>
             <div className="staff-table">
                 <table>
                     <thead>
@@ -151,7 +153,7 @@ function DeleteUser({onBack}) {
                 </table>
             </div>
 
-            <button onClick={onBack}>Back</button>
+            <button className={"back"} onClick={onBack}>Back</button>
 
             <div className="pagination">
                 <button

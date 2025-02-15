@@ -77,6 +77,17 @@ h1 {
     cursor: pointer;
 }
 
+.delete-meal{
+    background-color: red;
+    font-size: 14px;
+    padding: 8px;
+    transition: background-color .3s ease-in-out;
+}
+
+.delete-meal:hover{
+    background-color: firebrick;
+}
+
 /* Pagination Controls */
 .pagination {
     display: flex;

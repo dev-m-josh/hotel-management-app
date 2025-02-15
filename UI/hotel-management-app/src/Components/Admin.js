@@ -4,12 +4,12 @@ import '../Styles/Admin.css';
 import AddMeal from './AddMeal';
 import DeleteUser from './DeleteUser';
 import DeleteMeal from './DeleteMeal';
+import EditMeal from "./EditMeal";
 
 function Admin() {
     const navigate = useNavigate();
-    const [isAddingMeal, setIsAddingMeal] = useState(false);
-    const [isDeletingUser, setIsDeletingUser] = useState(false);
-    const [isDeletingMeal, setIsDeletingMeal] = useState(false);
+    const [activeForm, setActiveForm] = useState(''); // Track active form
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         // Get user from localStorage
@@ -19,51 +19,54 @@ function Admin() {
         if (!user || user.role !== 'admin') {
             // Redirect non-admin users to home or login
             navigate('/');
+        } else {
+            setIsAdmin(true);
         }
     }, [navigate]);
 
-    // Toggle the Add Meal form visibility
-    const toggleAddMealForm = () => {
-        setIsAddingMeal(!isAddingMeal);
-        setIsDeletingUser(false);
-        setIsDeletingMeal(false);
-    };
-
-    // Toggle the Delete User form visibility
-    const toggleDeleteUserForm = () => {
-        setIsDeletingUser(!isDeletingUser);
-        setIsAddingMeal(false);
-        setIsDeletingMeal(false);
-    };
-
-    // Toggle the Delete Meal form visibility
-    const toggleDeleteMealForm = () => {
-        setIsDeletingMeal(!isDeletingMeal);
-        setIsAddingMeal(false);
-        setIsDeletingUser(false); 
+    // Toggle the active form
+    const toggleForm = (form) => {
+        setActiveForm(activeForm === form ? '' : form); // Toggle form visibility
     };
 
     return (
         <div className="admin">
-            <h1>Admin Tasks</h1>
+            <h1>Admin Dashboard</h1>
+            <h4>Select an option to manage meals and users.</h4>
             <div className="list">
                 <ul>
-                    <li><button onClick={toggleAddMealForm}>Add meal</button></li>
-                    <li><button onClick={toggleDeleteMealForm}>Delete meal</button></li>
-                    <li><button>Edit meal</button></li>
-                    <li><button onClick={toggleDeleteUserForm}>Delete user</button></li>
-                    <li><button>Edit user role</button></li>
+                    <li><button onClick={() => toggleForm('addMeal')}>Add Meal</button></li>
+                    <li><button onClick={() => toggleForm('deleteMeal')}>Delete Meal</button></li>
+                    <li><button onClick={() => toggleForm('editMeal')}>Edit Meal</button></li>
+                    <li><button onClick={() => toggleForm('deleteUser')}>Delete User</button></li>
+                    <li><button>Edit User Role</button></li>
                 </ul>
             </div>
 
-            {/* Show the AddMeal form if isAddingMeal is true */}
-            {isAddingMeal && <AddMeal onBack={toggleAddMealForm} />}
+            {/* Conditionally render the background blur when a form is active */}
+            {activeForm && <div className="blur-background" />}
 
-            {/* Show the DeleteUser form if isDeletingUser is true */}
-            {isDeletingUser && <DeleteUser onBack={toggleDeleteUserForm} />}
-
-            {/* Show the DeleteMeal form if isDeletingMeal is true */}
-            {isDeletingMeal && <DeleteMeal onBack={toggleDeleteMealForm} />}
+            {/* Conditional rendering of forms */}
+            {activeForm === 'addMeal' && (
+                <div className="modal-form">
+                    <AddMeal onBack={() => setActiveForm('')} />
+                </div>
+            )}
+            {activeForm === 'deleteMeal' && (
+                <div className="modal-form">
+                    <DeleteMeal onBack={() => setActiveForm('')} />
+                </div>
+            )}
+            {activeForm === 'editMeal' && (
+                <div className="modal-form">
+                    <EditMeal onBack={() => setActiveForm('')} />
+                </div>
+            )}
+            {activeForm === 'deleteUser' && (
+                <div className="modal-form">
+                    <DeleteUser onBack={() => setActiveForm('')} />
+                </div>
+            )}
         </div>
     );
 }

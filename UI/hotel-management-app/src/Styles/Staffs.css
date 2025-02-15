@@ -7,6 +7,13 @@
     width: 100%;
 }
 
+.staffs-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
 h1 {
     text-align: center;
     font-size: 2.5em;
@@ -76,12 +83,23 @@ button:disabled {
     box-shadow: none;
 }
 
+.back{
+    background-color: blue;
+    margin-top: 10px;
+    font-size: 14px;
+    padding: 10px;
+}
+
+.back:hover{
+    background-color: #0056b3;
+}
+
 /* Fire Button */
 button.delete {
     background-color: #e74c3c;
     color: white;
-    margin-right: 10px;
-    padding: 10px 15px;
+    padding: 8px 10px;
+    font-size: 14px;
 }
 
 button.delete:hover {

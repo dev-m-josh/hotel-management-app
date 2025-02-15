@@ -96,8 +96,8 @@ function DeleteMeal({onBack}) {
                         <td>{meal.category}</td>
                         <td>Ksh {meal.price}</td>
                         <td>
-                            <button className={"delete-meal"}>
-                                Delete
+                            <button className={"edit-btn"}>
+                                Edit
                             </button>
                         </td>
                     </tr>
@@ -105,7 +105,7 @@ function DeleteMeal({onBack}) {
                 </tbody>
             </table>
 
-            <button className={""} onClick={onBack}>Back</button>
+            <button className={""} onClick={onBack} >Back</button>
 
             {/* Pagination Controls */}
             <div className="pagination">
