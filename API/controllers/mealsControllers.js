@@ -93,7 +93,7 @@ function editMeal(req, res) {
   let mealEdits = req.body;
   pool.query(
     `UPDATE menu_items
-      SET name = '${mealEdits.name}', category = '${mealEdits.category}', description = '${mealEdits.description}', price = '${mealEdits.price}' WHERE meal_id = '${requestedMealId}'`,
+      SET price = '${mealEdits.price}' WHERE meal_id = '${requestedMealId}'`,
     (err, result) => {
       console.log(result)
       if (err) {
