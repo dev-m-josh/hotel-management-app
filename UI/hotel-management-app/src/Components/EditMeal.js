@@ -9,8 +9,8 @@ function EditMeal({ onBack }) {
     const [page, setPage] = useState(1);
     const [pageSize] = useState(5);
     const [noMoreMeals, setNoMoreMeals] = useState(false);
-    const [editingMeal, setEditingMeal] = useState(null); // Track the meal being edited
-    const [newPrice, setNewPrice] = useState(""); // Track the new price
+    const [editingMeal, setEditingMeal] = useState(null);
+    const [newPrice, setNewPrice] = useState("");
     const token = localStorage.getItem("authToken");
     const navigate = useNavigate();
 
@@ -60,12 +60,12 @@ function EditMeal({ onBack }) {
     };
 
     const handleEditClick = (meal) => {
-        setEditingMeal(meal); // Set the meal being edited
-        setNewPrice(meal.price); // Set the current price as the starting value in the form
+        setEditingMeal(meal);
+        setNewPrice(meal.price);
     };
 
     const handlePriceChange = (e) => {
-        setNewPrice(e.target.value); // Update the new price
+        setNewPrice(e.target.value);
     };
 
     const handleSaveEdit = async () => {
@@ -89,13 +89,10 @@ function EditMeal({ onBack }) {
 
             if (response.ok) {
                 alert("Meal updated successfully!");
-                // Reset the edit form and the price field
                 setEditingMeal(null);
                 setNewPrice("");
+                setPage(1);
 
-                // After the edit, fetch meals again to reflect the updated meal
-                setPage(1); // Reset to first page to show updated list of meals
-                setError(null); // Clear any previous errors
                 const responseMeals = await fetch(
                     `http://localhost:3500/meals?page=${page}&pageSize=${pageSize}`
                 );
@@ -118,7 +115,6 @@ function EditMeal({ onBack }) {
         }
     };
 
-
     if (loading) {
         return <div className="loading">Loading...</div>;
     }
@@ -130,66 +126,68 @@ function EditMeal({ onBack }) {
     return (
         <div className="meals">
             <h1>Menu</h1>
-
-            {/* Conditionally render the table only if there are meals */}
-            <table className="meal-table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                {meals.map((meal) => (
-                    <tr key={meal.meal_id}>
-                        <td>{meal.name}</td>
-                        <td>{meal.category}</td>
-                        <td>Ksh {meal.price}</td>
-                        <td>
-                            <button
-                                className={"edit-btn"}
-                                onClick={() => handleEditClick(meal)}
-                            >
-                                Edit
-                            </button>
-                        </td>
+            <div className={editingMeal ? "meals-table blurred" : "meals-table"}>
+                <table className="meal-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Action</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {meals.map((meal) => (
+                        <tr key={meal.meal_id}>
+                            <td>{meal.name}</td>
+                            <td>{meal.category}</td>
+                            <td>Ksh {meal.price}</td>
+                            <td>
+                                <button
+                                    className="edit-btn"
+                                    onClick={() => handleEditClick(meal)}
+                                >
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
 
-            {/* Display the Edit Form */}
+            {/* Edit Meal Modal */}
             {editingMeal && (
-                <div className="edit-form">
-                    <h2>Edit Meal</h2>
-                    <div>
-                        <label>Meal Name:</label>
-                        <input
-                            type="text"
-                            value={editingMeal.name}
-                            disabled
-                        />
+                <div className="edit-modal">
+                    <div className="edit-form">
+                        <h2>Edit Meal</h2>
+                        <div>
+                            <label>Meal Name:</label>
+                            <input
+                                type="text"
+                                value={editingMeal.name}
+                                disabled
+                            />
+                        </div>
+                        <div>
+                            <label>Category:</label>
+                            <input
+                                type="text"
+                                value={editingMeal.category}
+                                disabled
+                            />
+                        </div>
+                        <div>
+                            <label>Price:</label>
+                            <input
+                                type="number"
+                                value={newPrice}
+                                onChange={handlePriceChange}
+                            />
+                        </div>
+                        <button onClick={handleSaveEdit}>Save</button>
+                        <button onClick={() => setEditingMeal(null)}>Cancel</button>
                     </div>
-                    <div>
-                        <label>Category:</label>
-                        <input
-                            type="text"
-                            value={editingMeal.category}
-                            disabled
-                        />
-                    </div>
-                    <div>
-                        <label>Price:</label>
-                        <input
-                            type="number"
-                            value={newPrice}
-                            onChange={handlePriceChange}
-                        />
-                    </div>
-                    <button onClick={handleSaveEdit}>Save</button>
-                    <button onClick={() => setEditingMeal(null)}>Cancel</button>
                 </div>
             )}
 
