@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Meals.css";
 
-function DeleteMeal({onBack}) {
+function DeleteMeal({ onBack }) {
     const [meals, setMeals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,8 +13,8 @@ function DeleteMeal({onBack}) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token){
-            navigate("/login")
+        if (!token) {
+            navigate("/login");
         }
 
         const fetchMeals = async () => {
@@ -54,7 +54,6 @@ function DeleteMeal({onBack}) {
         fetchMeals();
     }, [page, pageSize]);
 
-    // Handle pagination for next and previous page
     const handleNextPage = () => {
         if (!noMoreMeals && !loading) {
             setPage((nextPage) => nextPage + 1);
@@ -64,6 +63,39 @@ function DeleteMeal({onBack}) {
     const handlePreviousPage = () => {
         if (page > 1 && !loading) {
             setPage((prevPage) => prevPage - 1);
+        }
+    };
+
+    // Handle Meal Deletion
+    const handleDeleteMeal = async (mealId) => {
+        const confirmDelete = window.confirm(
+            "Are you sure you want to delete this meal?"
+        );
+        if (!confirmDelete) return;
+
+        try {
+            setLoading(true);
+
+            const response = await fetch(`http://localhost:3500/meals/${mealId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            // Remove meal from UI (optimistic UI update)
+            setMeals((prevMeals) => prevMeals.filter((meal) => meal.meal_id !== mealId));
+
+            alert("Meal deleted successfully!");
+        } catch (err) {
+            console.error("Error deleting meal:", err);
+            alert("Failed to delete meal.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -96,7 +128,10 @@ function DeleteMeal({onBack}) {
                         <td>{meal.category}</td>
                         <td>Ksh {meal.price}</td>
                         <td>
-                            <button className={"delete-meal"}>
+                            <button
+                                className="delete-meal"
+                                onClick={() => handleDeleteMeal(meal.meal_id)}
+                            >
                                 Delete
                             </button>
                         </td>
@@ -105,7 +140,9 @@ function DeleteMeal({onBack}) {
                 </tbody>
             </table>
 
-            <button className={""} onClick={onBack}>Back</button>
+            <button className="" onClick={onBack}>
+                Back
+            </button>
 
             {/* Pagination Controls */}
             <div className="pagination">
