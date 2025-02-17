@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { newUserSchema, userLoginSchema,editUsernameSchema } = require("../validators/validators");
+const { newUserSchema, userLoginSchema,editUsernameSchema, editUserRoleSchema } = require("../validators/validators");
 
 //get all users
 function getAllStaffs(req, res) {
@@ -127,7 +127,6 @@ function editUserName(req, res) {
   let requestedUserId = req.params.userId;
   let userEdits = req.body;
 
-  console.log(userEdits)
   // Validation
   const { error, value } = editUsernameSchema.validate(userEdits, {
     abortEarly: false,
@@ -169,7 +168,51 @@ function editUserName(req, res) {
 }
 
 // EDIT USER ROLE
+function editUserRole(req, res) {
+  let pool = req.pool;
+  let requestedUserId = req.params.userId;
+  let userEdits = req.body;
 
+  console.log(userEdits)
+  // Validation
+  const { error, value } = editUserRoleSchema.validate(userEdits, {
+    abortEarly: false,
+  });
+  if (error) {
+    console.log(error);
+    return res.status(400).json({ errors: error.details });
+  }
+
+  pool.query(`
+    UPDATE users
+    SET user_role = '${userEdits.user_role}'
+    WHERE user_id = '${requestedUserId}'`,(err,result) =>{
+        console.log(result)
+        if (err) {
+          res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+          });
+          console.log("Error occured in query", err);
+          return
+        }
+        // Check if any rows were affected
+        if (result.rowsAffected[0] === 0) {
+          return res.status(404).json({
+            success: false,
+            message: `User with ID ${requestedUserId} not found.`,
+          });
+        } else {
+          res.json({
+            success: true,
+            message: "Edit was successfully done.",
+            rowsAffected: result.rowsAffected,
+            newUserDetails: userEdits,
+          });
+        }
+      }
+  )
+}
 
 //DELETE A USER
 function deleteUser(req, res) {
@@ -206,4 +249,4 @@ function deleteUser(req, res) {
   );
 }
 
-module.exports = { getAllStaffs, addNewUser, userLogin, editUserName, deleteUser };
+module.exports = { getAllStaffs, addNewUser, userLogin, editUserName, editUserRole, deleteUser };

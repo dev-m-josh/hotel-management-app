@@ -8,6 +8,7 @@ import Login from "./Components/Login";
 import SignUp from "./Components/SignUp";
 import Orders from "./Components/Orders";
 import Admin from "./Components/Admin";
+import StaffsActions from "./Components/DeleteUser";
 // import CreateOrder from "./Components/CreateOrder";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
               <Route path="/admin" element={<Admin/>} />
+              <Route path="/staffs-actions" element={<StaffsActions/>} />
           {/*  <Route path="/create-order" element={<CreateOrder />} />            */}
           </Routes>
         </div>

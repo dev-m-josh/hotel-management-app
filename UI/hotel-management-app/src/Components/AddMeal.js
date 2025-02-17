@@ -9,9 +9,10 @@ export default function AddMeal({onBack}) {
         name: '',
         category: '',
         description: '',
-        price: `${''}`
+        price: ''
     });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -23,6 +24,8 @@ export default function AddMeal({onBack}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
 
         try {
             const response = await axios.post(
@@ -37,8 +40,10 @@ export default function AddMeal({onBack}) {
             alert(response.data.message);
             onBack();
         } catch (err) {
-            setError('Failed to add meal');
+            setError(err.response?.data?.message || 'Failed to add meal');
             console.error('Error adding meal:', err);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -97,7 +102,9 @@ export default function AddMeal({onBack}) {
                 </div>
                 <div className="form-buttons">
                     <button className="cancel-button" type="button" onClick={onBack}>Back</button>
-                    <button className="submit-button" type="submit">Add Meal</button>
+                    <button className="submit-button" type="submit" disabled={loading}>
+                        {loading ? "Adding Meal..." : "Add Meal"}
+                    </button>
                 </div>
             </form>
         </div>

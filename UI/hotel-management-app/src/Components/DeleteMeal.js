@@ -140,7 +140,7 @@ function DeleteMeal({ onBack }) {
                 </tbody>
             </table>
 
-            <button className="" onClick={onBack}>
+            <button className="back" onClick={onBack}>
                 Back
             </button>
 

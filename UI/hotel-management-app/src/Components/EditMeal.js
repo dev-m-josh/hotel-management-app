@@ -191,7 +191,7 @@ function EditMeal({ onBack }) {
                 </div>
             )}
 
-            <button className={""} onClick={onBack}>
+            <button className={"back"} onClick={onBack}>
                 Back
             </button>
 

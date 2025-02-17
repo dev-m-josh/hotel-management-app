@@ -5,6 +5,7 @@ import AddMeal from './AddMeal';
 import DeleteUser from './DeleteUser';
 import DeleteMeal from './DeleteMeal';
 import EditMeal from "./EditMeal";
+import EditUserRole from "./EditUserRole";
 
 function Admin() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ function Admin() {
                     <li><button onClick={() => toggleForm('deleteMeal')}>Delete Meal</button></li>
                     <li><button onClick={() => toggleForm('editMeal')}>Edit Meal</button></li>
                     <li><button onClick={() => toggleForm('deleteUser')}>Delete User</button></li>
-                    <li><button>Edit User Role</button></li>
+                    <li><button onClick={() => toggleForm('editUserRole')}>Edit User Role</button></li>
                 </ul>
             </div>
 
@@ -65,6 +66,11 @@ function Admin() {
             {activeForm === 'deleteUser' && (
                 <div className="modal-form">
                     <DeleteUser onBack={() => setActiveForm('')} />
+                </div>
+            )}
+            {activeForm === 'editUserRole' && (
+                <div className="modal-form">
+                    <EditUserRole onBack={() => setActiveForm('')} />
                 </div>
             )}
         </div>
