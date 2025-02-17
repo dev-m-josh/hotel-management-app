@@ -67,7 +67,7 @@ WHERE
 
 //sales for specific date range
 function salesForSpecificTimeRange(req, res) {
-  let date = req.body;
+  let {start, end} = req.query;
   let pool = req.pool;
   pool.query(
     `SELECT 
@@ -79,8 +79,8 @@ JOIN
 JOIN 
     orders o ON oi.order_id = o.order_id
 WHERE 
-    o.created_at >= '${date.start}'
-    AND o.created_at < '${date.end}'`,
+    o.created_at >= '${start}'
+    AND o.created_at < '${end}'`,
     (err, result) => {
       if (err) {
         res.status(500).json({

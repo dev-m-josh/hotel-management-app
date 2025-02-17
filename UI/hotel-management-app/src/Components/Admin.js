@@ -6,6 +6,7 @@ import DeleteUser from './DeleteUser';
 import DeleteMeal from './DeleteMeal';
 import EditMeal from "./EditMeal";
 import EditUserRole from "./EditUserRole";
+import SalesReport from "./Sales";
 
 function Admin() {
     const navigate = useNavigate();
@@ -41,6 +42,7 @@ function Admin() {
                     <li><button onClick={() => toggleForm('editMeal')}>Edit Meal</button></li>
                     <li><button onClick={() => toggleForm('deleteUser')}>Delete User</button></li>
                     <li><button onClick={() => toggleForm('editUserRole')}>Edit User Role</button></li>
+                    <li><button onClick={() => toggleForm('salesReport')}>Sales</button></li>
                 </ul>
             </div>
 
@@ -71,6 +73,11 @@ function Admin() {
             {activeForm === 'editUserRole' && (
                 <div className="modal-form">
                     <EditUserRole onBack={() => setActiveForm('')} />
+                </div>
+            )}
+            {activeForm === 'salesReport' && (
+                <div className="modal-form">
+                    <SalesReport onBack={() => setActiveForm('')} />
                 </div>
             )}
         </div>
