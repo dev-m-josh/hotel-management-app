@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function SalesReport() {
+function SalesReport({onBack}) {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [totalSales, setTotalSales] = useState(null);
@@ -39,11 +39,11 @@ function SalesReport() {
             const data = response.data
 
             // Check if there's any sales data returned
-            if (data.message) {
-                setError(response.data.message); // Handle no sales case
+            if (data.total_sales === null) {
+                alert("No sales made during this period")
                 setTotalSales(null);
             } else {
-                setTotalSales(response.data[0].total_sales);
+                setTotalSales(data.total_sales);
             }
         } catch (err) {
             setError("An error occurred while fetching the data.");
@@ -51,6 +51,12 @@ function SalesReport() {
         } finally {
             setLoading(false); // End loading
         }
+    };
+
+    const handleBack = () => {
+        setTotalSales(null);
+        setStartDate('');
+        setEndDate('');
     };
 
     return (
@@ -77,9 +83,17 @@ function SalesReport() {
                         required
                     />
                 </div>
-                <button type="submit" disabled={loading}>
-                    {loading ? "Loading..." : "Get Sales"}
-                </button>
+                <div className={"sales-buttons"}>
+                    <button className={"cancel-button"}
+                            type={"button"}
+                            onClick={onBack}
+                        >
+                        Back
+                    </button>
+                    <button className={"back"} type="submit" disabled={loading}>
+                        {loading ? "Loading..." : "Get Sales"}
+                    </button>
+                </div>
             </form>
 
             {error && <p className="error">{error}</p>}
@@ -90,7 +104,7 @@ function SalesReport() {
                     <h3>From: {startDate}</h3>
                     <h3>To: {endDate}</h3>
                     <h3>= ${totalSales}</h3>
-                    <button>Back</button>
+                    <button className={"cancel-button"} onClick={handleBack}>Back</button>
                 </div>
             )}
         </div>

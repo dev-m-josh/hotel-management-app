@@ -89,12 +89,13 @@ WHERE
         });
         console.log("Error occured in query", err);
       }
-      if (result.rowsAffected[0] === 0) {
+      if (result.recordsettotal_sales === null) {
         res.json({
           message: "No sales made during this period",
         });
       } else {
-        res.json(result.recordset);
+          console.log(result.recordset)
+        res.json(result.recordset[0]);
       }
     }
   );
