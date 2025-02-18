@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "../Styles/Sales.css"
 
-function SalesReport({onBack}) {
+function SalesReport({ onBack }) {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [totalSales, setTotalSales] = useState(null);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const token = localStorage.getItem('authToken');
+    const [dateSelection, setDateSelection] = useState(true);
 
     // Handle form submission
     const handleSubmit = async (e) => {
@@ -36,14 +38,15 @@ function SalesReport({onBack}) {
                 }
             );
 
-            const data = response.data
+            const data = response.data;
 
             // Check if there's any sales data returned
             if (data.total_sales === null) {
-                alert("No sales made during this period")
+                alert("No sales made during this period");
                 setTotalSales(null);
             } else {
                 setTotalSales(data.total_sales);
+                setDateSelection(false);  // Switch to the results view
             }
         } catch (err) {
             setError("An error occurred while fetching the data.");
@@ -57,54 +60,60 @@ function SalesReport({onBack}) {
         setTotalSales(null);
         setStartDate('');
         setEndDate('');
+        setDateSelection(true); // Switch back to the date selection form
     };
 
     return (
         <div className="sales-report">
-            <h2>Sales Report</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="startDate">Start Date:</label>
-                    <input
-                        type="date"
-                        id="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="endDate">End Date:</label>
-                    <input
-                        type="date"
-                        id="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className={"sales-buttons"}>
-                    <button className={"cancel-button"}
-                            type={"button"}
-                            onClick={onBack}
-                        >
-                        Back
-                    </button>
-                    <button className={"back"} type="submit" disabled={loading}>
-                        {loading ? "Loading..." : "Get Sales"}
-                    </button>
-                </div>
-            </form>
+            {dateSelection ? (
+                <>
+                    <h2>Sales Report</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="startDate">Start Date:</label>
+                            <input
+                                type="date"
+                                id="startDate"
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="endDate">End Date:</label>
+                            <input
+                                type="date"
+                                id="endDate"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className={"sales-buttons"}>
+                            <button
+                                className={"cancel-button"}
+                                type={"button"}
+                                onClick={onBack}
+                            >
+                                Back
+                            </button>
+                            <button className={"back"} type="submit" disabled={loading}>
+                                {loading ? "Loading..." : "Get Sales"}
+                            </button>
+                        </div>
+                    </form>
 
-            {error && <p className="error">{error}</p>}
-
-            {totalSales !== null && (
+                    {error && <p className="error">{error}</p>}
+                </>
+            ) : (
                 <div className="result">
                     <h1>Total Sales</h1>
                     <h3>From: {startDate}</h3>
                     <h3>To: {endDate}</h3>
                     <h3>= ${totalSales}</h3>
-                    <button className={"cancel-button"} onClick={handleBack}>Back</button>
+                    <button className={"cancel-button"} onClick={handleBack}>
+                        Back
+                    </button>
                 </div>
             )}
         </div>
