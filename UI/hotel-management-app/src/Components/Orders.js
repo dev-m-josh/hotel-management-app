@@ -12,7 +12,6 @@ export default function Orders() {
     const [noMoOrders, setNoMoreOrders] = useState(false); // Flag for no more orders
     const [showCreateOrder, setShowCreateOrder] = useState(false); // Control CreateOrder visibility
     const token = localStorage.getItem("authToken"); // Authorization token
-    const loggedInUser = localStorage.getItem("user"); // LoggedIn user
     const navigate = useNavigate();
 
     // Fetch orders when the component mounts or when page changes
@@ -69,39 +68,6 @@ export default function Orders() {
         setShowCreateOrder((prevState) => !prevState);
     };
 
-    const handleDelete = async (orderId) => {
-
-        if (loggedInUser.role !== "admin") {
-            alert("You can't delete this order!");
-            return;
-        }
-
-        try {
-            const response = await fetch(`http://localhost:3500/orders/${orderId}`, {
-                method: "DELETE",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete the order");
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                alert("Order deleted successfully.");
-                fetchOrders(); // Refresh the list of orders
-            } else {
-                alert("Failed to delete the order.");
-            }
-        } catch (err) {
-            setError("An error occurred while deleting the order. Please try again.");
-            console.error("Error deleting order:", err);
-        }
-    };
-
     return (
         <div className="orders">
             <h1>Orders List</h1>
@@ -137,7 +103,6 @@ export default function Orders() {
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total Cost</th>
-                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -148,14 +113,6 @@ export default function Orders() {
                                 <td>${order.meal_price}</td>
                                 <td>{order.quantity}</td>
                                 <td>${order.total_cost}</td>
-                                <td>
-                                    <button
-                                        className="delete"
-                                        onClick={() => handleDelete(order.order_id)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
                             </tr>
                         ))}
                         </tbody>

@@ -407,13 +407,17 @@ button:disabled {
 /*********************************************/
 
 /* Styling for Small Screens */
-@media (max-width: 700px) {
+@media (max-width: 600px) {
     .create-order-container {
         padding: 15px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .orders{
+        margin: 0;
     }
 
     .place-order {
@@ -424,6 +428,10 @@ button:disabled {
     .meal-items td button {
         font-size: 14px;
         padding: 6px 10px;
+    }
+
+    .order-btn{
+        width: fit-content;
     }
 
     .order-buttons {
@@ -449,6 +457,10 @@ button:disabled {
     .place-order .meal-items,
     .place-order .selected-meals {
         width: 100%;
+    }
+
+    .pagination{
+        margin-top: 0;
     }
 }
 

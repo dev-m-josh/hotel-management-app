@@ -38,6 +38,7 @@ li {
 .list button:hover {
     background-color: transparent;
     text-decoration: underline;
+    color: purple;
 }
 
 .submit{
@@ -88,3 +89,11 @@ h4 {
     width: fit-content;
 }
 
+@media screen and (max-width: 600px) {
+    .admin{
+        padding: 20px;
+    }
+    .list button{
+        width: fit-content;
+    }
+}

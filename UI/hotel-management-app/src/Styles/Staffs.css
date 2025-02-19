@@ -4,7 +4,8 @@
     margin: 0;
     padding: 20px;
     background-color: #f9f9f9;
-    width: 100%;
+    width: fit-content;
+    min-width: 550px;
 }
 
 .staffs-header{
@@ -394,18 +395,28 @@ button.back:hover {
 }
 
 /* Responsive styles for mobile screens */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 600px) {
+    .staffs{
+        margin: 0;
+    }
+
+    .staff-table{
+        padding: 0;
+        width: 100%;
+    }
+
     .staff-table th, .staff-table td {
         font-size: 0.875rem;
         padding: 8px;
+        width: fit-content;
     }
 
     .modal-content {
         width: 90%;
     }
 
-    .pagination {
-        flex-direction: column;
+    .pagination{
+        width: 100%;
     }
 
     .pagination button {
@@ -417,3 +428,5 @@ button.back:hover {
         margin-top: 10px;
     }
 }
+
+

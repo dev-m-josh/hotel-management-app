@@ -31,10 +31,18 @@ body {
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
+  .App{
+    margin-top: 150px;
+    width: 100%;
+    padding: 0;
+  }
+
   .page-content{
-    width: fit-content;
+    width: 100%;
     align-self: center;
+    padding: 0;
+
   }
 }
 

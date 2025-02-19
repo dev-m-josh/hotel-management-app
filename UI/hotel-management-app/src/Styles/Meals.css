@@ -136,8 +136,21 @@ h1 {
         font-size: 14px;
     }
 
+    .pagination{
+        margin-top: 0;
+    }
+
     h1 {
         font-size: 2rem;
+    }
+
+    .back{
+        background-color: #007bff;
+        margin: 0;
+    }
+
+    .meal-table{
+        margin-bottom: 10px;
     }
 }
 
@@ -220,7 +233,7 @@ h1 {
 }
 
 .back{
-    background-color: #007bff;
+    background-color: #dc3545;
     margin-top: 10px;
 }
 
