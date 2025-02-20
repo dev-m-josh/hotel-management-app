@@ -96,4 +96,7 @@ h4 {
     .list button{
         width: fit-content;
     }
+    .modal-form{
+        margin-top: 20px;
+    }
 }

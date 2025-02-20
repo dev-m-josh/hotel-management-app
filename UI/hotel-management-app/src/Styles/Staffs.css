@@ -378,9 +378,8 @@ select:disabled {
 
 /* Back button styling */
 button.back {
-    margin-top: 10px;
+    margin-top: 0px;
     padding: 10px 20px;
-
     font-size: 1rem;
     background-color: #007bff;
     color: white;
@@ -412,20 +411,29 @@ button.back:hover {
     }
 
     .modal-content {
-        width: 90%;
+        width: 55%;
     }
 
     .pagination{
         width: 100%;
+        margin-top: 0;
     }
 
     .pagination button {
         margin: 5px 0;
     }
 
-    .modal-actions button {
+    .modal-actions{
         width: 100%;
+    }
+
+    .modal-actions button {
+        width: fit-content;
         margin-top: 10px;
+    }
+
+    .back{
+        margin-top: 0;
     }
 }
 

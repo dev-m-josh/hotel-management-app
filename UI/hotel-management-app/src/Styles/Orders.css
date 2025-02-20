@@ -256,12 +256,6 @@ select:focus {
     outline: none;
 }
 
-.order-buttons {
-    display: flex;
-    align-self: flex-end;
-    gap: 10px;
-}
-
 .cancel-order {
     background-color: red;
     transition: ease-in-out 0.3s;
@@ -355,7 +349,7 @@ button:disabled {
 .order-buttons {
     margin-top: 10px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: flex-end;
     gap: 20px;
     width: 100%;
@@ -370,6 +364,8 @@ button:disabled {
     font-size: 14px;
     color: red;
 }
+
+
 
 .meal-items td input {
     width: 60px;
@@ -409,11 +405,19 @@ button:disabled {
 /* Styling for Small Screens */
 @media (max-width: 600px) {
     .create-order-container {
-        padding: 15px;
+        padding: 0;
         width: 100%;
-        display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .initiate-order{
+        width: 100%;
+    }
+
+    .create-order{
+        width: 100%;
+        flex-direction: column;
     }
 
     .orders{
@@ -422,6 +426,7 @@ button:disabled {
 
     .place-order {
         flex-direction: column;
+        padding: 0;
     }
 
     .meal-items td input,
@@ -430,17 +435,15 @@ button:disabled {
         padding: 6px 10px;
     }
 
-    .order-btn{
-        width: fit-content;
-    }
-
     .order-buttons {
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: end;
         gap: 10px;
+        width: 100%;
     }
 
     .order-buttons button {
-        width: 100%;
+        width: fit-content;
         padding: 3px 5px;
     }
 
@@ -452,15 +455,36 @@ button:disabled {
     .meal-items table,
     .selected-meals table {
         font-size: 14px;
+        width: 100%;
     }
 
-    .place-order .meal-items,
     .place-order .selected-meals {
+        width: 99%;
+    }
+
+    .meal-items table{
         width: 100%;
     }
 
     .pagination{
         margin-top: 0;
+    }
+
+    .order-buttons{
+        flex-direction: row;
+        padding: 0 10px;
+    }
+
+    .place-order-btn{
+        padding: 0px;
+    }
+
+    .order-button{
+        width: fit-content;
+    }
+
+    .meals-list h3{
+        width: fit-content;
     }
 }
 

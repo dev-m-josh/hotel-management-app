@@ -241,8 +241,8 @@ export default function CreateOrder({ toggleCreateOrder }) {
                                             }}
                                         >
                                             {selectedMeals.some((m) => m.meal_id === meal.meal_id)
-                                                ? "Remove from Order"
-                                                : "Add to Order"}
+                                                ? "Remove"
+                                                : "Add"}
                                         </button>
                                     </td>
                                 </tr>

@@ -33,7 +33,6 @@ body {
 
 @media (max-width: 600px) {
   .App{
-    margin-top: 150px;
     width: 100%;
     padding: 0;
   }
@@ -42,6 +41,7 @@ body {
     width: 100%;
     align-self: center;
     padding: 0;
+    margin-top: 20px;
 
   }
 }

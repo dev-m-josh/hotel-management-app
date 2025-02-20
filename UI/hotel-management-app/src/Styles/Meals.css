@@ -7,6 +7,8 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
@@ -142,15 +144,11 @@ h1 {
 
     h1 {
         font-size: 2rem;
-    }
-
-    .back{
-        background-color: #007bff;
-        margin: 0;
+        margin-bottom: 0;
     }
 
     .meal-table{
-        margin-bottom: 10px;
+        margin-bottom: 0;
     }
 }
 
