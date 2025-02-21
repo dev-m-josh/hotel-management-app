@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../Styles/Staffs.css";
+import "../Styles/Meals.css";
+import "../Styles/Staffs.css"
 
-function EditUserRole({ onBack }) {
+function EditUserRole({onBack}) {
     const [staffs, setStaffs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [page, setPage] = useState(1);
+    const [pageSize] = useState(5); // Number of items per page
+    const [noMoreStaffs, setNoMoreStaffs] = useState(false);
+    const token = localStorage.getItem("authToken");
+    const navigate = useNavigate();
     const [editingUser, setEditingUser] = useState(null); // State to track user being edited
     const [newRole, setNewRole] = useState(""); // State to hold the new role
-    const [page, setPage] = useState(1); // State for pagination
-    const [pageSize] = useState(5); // Page size for pagination
-    const [noMoreStaffs, setNoMoreStaffs] = useState(false); // Check if more staff exists
-    const navigate = useNavigate();
-    const token = localStorage.getItem("authToken");
 
-    // Fetch staff data with pagination
     useEffect(() => {
-        const fetchStaffs = async () => {
-            if (!token) {
-                navigate("/login");
-                return;
-            }
+        if (!token){
+            navigate("/login")
+        }
 
+        const fetchStaffs = async () => {
             try {
+                setLoading(true); // Set loading state to true while fetching
+
+                // Call the API
                 const response = await fetch(
                     `http://localhost:3500/users?page=${page}&pageSize=${pageSize}`,
                     {
@@ -35,21 +37,27 @@ function EditUserRole({ onBack }) {
                 );
 
                 if (!response.ok) {
-                    throw new Error(`${response.statusText}`);
+                    throw new Error(`Error: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                setStaffs(data);
 
-                if (data.length < pageSize) {
-                    setNoMoreStaffs(true);
+                if (Array.isArray(data)) {
+                    setStaffs(data);
+
+                    if (data.length < pageSize) {
+                        setNoMoreStaffs(true);
+                    } else {
+                        setNoMoreStaffs(false);
+                    }
                 } else {
-                    setNoMoreStaffs(false);
+                    throw new Error("Unexpected response format");
                 }
             } catch (err) {
+                console.error("Error fetching staffs:", err);
                 setError(err.message);
             } finally {
-                setLoading(false);
+                setLoading(false); // Set loading state to false after fetching
             }
         };
 
@@ -102,41 +110,60 @@ function EditUserRole({ onBack }) {
         setEditingUser(null); // Close the edit form without saving
     };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    // Handle pagination for next and previous page
+    const handleNextPage = () => {
+        if (!noMoreStaffs && !loading) {
+            setPage((nextPage) => nextPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (page > 1 && !loading) {
+            setPage((prevPage) => prevPage - 1);
+        }
+    };
+
+    if (loading) {
+        return <div className="loading">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="error">Error: {error}</div>;
+    }
 
     return (
-        <div className="staffs">
-            <div className="staffs-header">
-                <h1>Staff List</h1>
-            </div>
-            <div className="staff-table">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Position</th>
-                        <th>Actions</th>
+        <div className="meals">
+            <h1>Staffs</h1>
+
+            {/* Conditionally render the table only if there are meals */}
+            <table className="meal-table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {staffs.map((staff) => (
+                    <tr key={staff.user_id}>
+                        <td>{staff.username}</td>
+                        <td>{staff.user_role}</td>
+                        <td>
+                            <button
+                                className="edit"
+                                onClick={() => setEditingUser(staff)} // Set user for editing
+                            >
+                                Edit
+                            </button>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {staffs.map((staff) => (
-                        <tr key={staff.user_id}>
-                            <td>{staff.username}</td>
-                            <td>{staff.user_role}</td>
-                            <td>
-                                <button
-                                    className="edit"
-                                    onClick={() => setEditingUser(staff)} // Set user for editing
-                                >
-                                    Edit
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+                ))}
+                </tbody>
+                <button className="back" onClick={onBack}>
+                    Back
+                </button>
+            </table>
 
             {/* Show edit modal when a user is selected for editing */}
             {editingUser && (
@@ -179,21 +206,20 @@ function EditUserRole({ onBack }) {
                 </div>
             )}
 
-            <button className="back" onClick={onBack}>
-                Back
-            </button>
-
+            {/* Pagination Controls */}
             <div className="pagination">
                 <button
-                    onClick={() => setPage((prevPage) => Math.max(prevPage - 1, 1))}
+                    onClick={handlePreviousPage}
                     disabled={page === 1 || loading}
+                    className="pagination-button"
                 >
                     Previous
                 </button>
                 <span>{`Page ${page}`}</span>
                 <button
-                    onClick={() => setPage((nextPage) => nextPage + 1)}
+                    onClick={handleNextPage}
                     disabled={noMoreStaffs || loading}
+                    className="pagination-button"
                 >
                     Next
                 </button>
