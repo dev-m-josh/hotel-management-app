@@ -381,7 +381,7 @@ button.back {
     margin-top: 0px;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #007bff;
+    background-color: red;
     color: white;
     border: none;
     border-radius: 5px;
@@ -390,7 +390,7 @@ button.back {
 }
 
 button.back:hover {
-    background-color: #0056b3;
+    background-color: #dc3545;
 }
 
 /* Responsive styles for mobile screens */
@@ -411,7 +411,7 @@ button.back:hover {
     }
 
     .modal-content {
-        width: 55%;
+        width: 100%;
     }
 
     .pagination{
@@ -421,6 +421,7 @@ button.back:hover {
 
     .pagination button {
         margin: 5px 0;
+        background-color: #28a745;
     }
 
     .modal-actions{

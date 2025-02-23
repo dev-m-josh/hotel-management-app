@@ -185,8 +185,8 @@ function EditMeal({ onBack }) {
                                 onChange={handlePriceChange}
                             />
                         </div>
+                         <button onClick={() => setEditingMeal(null)}>Cancel</button>
                         <button onClick={handleSaveEdit}>Save</button>
-                        <button onClick={() => setEditingMeal(null)}>Cancel</button>
                     </div>
                 </div>
             )}
