@@ -13,8 +13,8 @@ function Staffs() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!token){
-            navigate("/login")
+        if (!token) {
+            navigate("/login");
         }
 
         const fetchStaffs = async () => {
@@ -86,25 +86,29 @@ function Staffs() {
         <div className="meals">
             <h1>Staffs</h1>
 
-            {/* Conditionally render the table only if there are meals */}
-            <table className="meal-table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                {staffs.map((staff) => (
-                    <tr key={staff.user_id}>
-                        <td>{staff.username}</td>
-                        <td>{staff.user_role}</td>
-                        <td>{staff.user_email}</td>
+            {/* Show message if there are no staffs */}
+            {staffs.length === 0 ? (
+                <div>No staff members available.</div>
+            ) : (
+                <table className="meal-table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Email</th>
                     </tr>
-                ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    {staffs.map((staff) => (
+                        <tr key={staff.user_id}>
+                            <td>{staff.username}</td>
+                            <td>{staff.user_role}</td>
+                            <td>{staff.user_email}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
 
             {/* Pagination Controls */}
             <div className="pagination">
