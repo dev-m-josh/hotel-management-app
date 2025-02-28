@@ -34,7 +34,7 @@ function Staffs() {
                 );
 
                 if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
+                    throw new Error(`${response.statusText}`);
                 }
 
                 const data = await response.json();
@@ -59,7 +59,7 @@ function Staffs() {
         };
 
         fetchStaffs();
-    }, [page, pageSize]);
+    }, [page, pageSize, navigate, token]);
 
     // Handle pagination for next and previous page
     const handleNextPage = () => {
@@ -86,7 +86,7 @@ function Staffs() {
         <div className="meals">
             <h1>Staffs</h1>
 
-            {/* Show message if there are no staffs */}
+            {/*/!* Show message if there are no staffs *!/*/}
             {staffs.length === 0 ? (
                 <div>No staff members available.</div>
             ) : (

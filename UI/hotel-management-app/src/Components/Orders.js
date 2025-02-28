@@ -35,7 +35,7 @@ export default function Orders() {
             );
 
             if (!response.ok) {
-                throw new Error("Failed to fetch orders.");
+                throw new Error(`Error: ${response.statusText}`);
             }
 
             const data = await response.json();
@@ -55,7 +55,7 @@ export default function Orders() {
 
     useEffect(() => {
         fetchOrders();
-    }, [page]);
+    }, [page, pageSize]);
 
     const toggleCreateOrder = () => {
         setShowCreateOrder((prevState) => !prevState);

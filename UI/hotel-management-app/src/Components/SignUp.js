@@ -38,7 +38,7 @@ export default function SignUp() {
             username,
             user_email: email,
             user_password: password,
-            user_role: "waiter",
+            user_role: "admin",
         };
 
         try {
@@ -49,7 +49,7 @@ export default function SignUp() {
 
             const data = response.data
 
-            localStorage.setItem("token", JSON.stringify(data.token));
+            localStorage.setItem("authToken", JSON.stringify(data.token));
 
             // Store user data in localStorage
             const loggedInUser = {

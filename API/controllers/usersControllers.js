@@ -8,7 +8,7 @@ function getAllStaffs(req, res) {
   let { page, pageSize } = req.query;
   let offset = (Number(page) - 1) * Number(pageSize);
   pool.query(
-    `SELECT * FROM users ORDER BY user_id OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
+    `SELECT * FROM users WHERE user_status = 'active' ORDER BY user_id OFFSET ${offset} ROWS FETCH NEXT ${pageSize} ROWS ONLY`,
     (err, result) => {
       if (err) {
         res.status(500).json({
@@ -41,8 +41,8 @@ async function addNewUser(req, res) {
   let token = await jwt.sign({ addedUser }, "youcanguessthisright");
 
   pool.query(
-    `INSERT INTO users (username, user_email, user_password, user_role)
-VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value.user_role}')`,
+    `INSERT INTO users (username, user_email, user_password, user_role, user_status)
+VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value.user_role}', 'active')`,
     (err, result) => {
       //ERROR AND RESPONSE
       if (err) {
@@ -59,6 +59,7 @@ VALUES ('${value.username}', '${value.user_email}', '${password_hash}', '${value
   );
 }
 
+//login user
 async function userLogin(req, res) {
   let pool = req.pool;
   let userDetails = req.body;
